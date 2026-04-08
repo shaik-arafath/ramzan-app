@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../theme/app_colors.dart';
 
 class ZikrCard extends StatelessWidget {
   final String zikr;
@@ -16,12 +17,12 @@ class ZikrCard extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: Colors.blue.shade50,
+        color: AppColors.primaryGreen,
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: Colors.blue.shade200),
+        border: Border.all(color: AppColors.gold.withOpacity(0.5)),
         boxShadow: [
           BoxShadow(
-            color: Colors.blue.withOpacity(0.1),
+            color: Colors.black.withOpacity(0.3),
             blurRadius: 8,
             offset: const Offset(0, 2),
           ),
@@ -32,13 +33,14 @@ class ZikrCard extends StatelessWidget {
         children: [
           Row(
             children: [
-              const Icon(Icons.favorite, color: Color(0xFF1F7B4F)),
+              const Icon(Icons.favorite, color: AppColors.gold),
               const SizedBox(width: 8),
               const Text(
                 'Zikr After Prayer',
                 style: TextStyle(
                   fontSize: 18,
                   fontWeight: FontWeight.bold,
+                  color: AppColors.white,
                 ),
               ),
             ],
@@ -50,6 +52,7 @@ class ZikrCard extends StatelessWidget {
               fontSize: 24,
               fontWeight: FontWeight.bold,
               height: 1.5,
+              color: AppColors.white,
             ),
             textDirection: TextDirection.rtl,
             textAlign: TextAlign.center,
@@ -57,10 +60,10 @@ class ZikrCard extends StatelessWidget {
           const SizedBox(height: 12),
           Text(
             transliteration,
-            style: TextStyle(
+            style: const TextStyle(
               fontSize: 16,
               fontStyle: FontStyle.italic,
-              color: Colors.grey.shade700,
+              color: AppColors.white70,
             ),
             textAlign: TextAlign.center,
           ),
@@ -69,7 +72,7 @@ class ZikrCard extends StatelessWidget {
             meaning,
             style: const TextStyle(
               fontSize: 14,
-              color: Color(0xFF1F7B4F),
+              color: AppColors.gold,
             ),
             textAlign: TextAlign.center,
           ),
@@ -77,7 +80,7 @@ class ZikrCard extends StatelessWidget {
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
             decoration: BoxDecoration(
-              color: const Color(0xFF1F7B4F).withOpacity(0.1),
+              color: AppColors.accentGreen,
               borderRadius: BorderRadius.circular(8),
             ),
             child: Text(
@@ -85,7 +88,7 @@ class ZikrCard extends StatelessWidget {
               style: const TextStyle(
                 fontSize: 14,
                 fontWeight: FontWeight.bold,
-                color: Color(0xFF1F7B4F),
+                color: AppColors.white,
               ),
             ),
           ),

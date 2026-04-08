@@ -3,17 +3,18 @@ import 'zikr_data.dart';
 import 'sunnah_data.dart';
 
 class RamadanData {
-  // Generate 29 days of Ramadan plan
+  // Generate 30 days of Ramadan plan
   static List<RamadanDay> generateRamadanPlan() {
     final days = <RamadanDay>[];
-    final startDate = DateTime(2025, 3, 1); // Adjust based on actual Ramadan start
+    // Ramadan 2026 starts on February 18, 2026 (1 Ramadan 1447)
+    final startDate = DateTime(2026, 2, 19);
     
-    for (int i = 0; i < 29; i++) {
+    for (int i = 0; i < 30; i++) {
       final date = startDate.add(Duration(days: i));
       final dayNumber = i + 1;
       
-      // Calculate Juz for 29-day completion (30 Juz / 29 days ≈ 1.034 Juz per day)
-      final juzNumber = ((dayNumber * 30) / 29).ceil();
+      // Calculate Juz for 30-day completion (30 Juz / 30 days = 1 Juz per day)
+      final juzNumber = dayNumber;
       
       days.add(RamadanDay(
         day: dayNumber,

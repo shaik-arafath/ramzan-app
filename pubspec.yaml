@@ -18,7 +18,7 @@ dependencies:
   audio_service: ^0.18.10
   
   # Notifications
-  flutter_local_notifications: ^16.3.2
+  flutter_local_notifications: ^18.0.1
   timezone: ^0.9.4
   
   # State management
@@ -33,10 +33,37 @@ dependencies:
   # UI
   google_fonts: ^6.1.0
 
+  # Video playback (for Bayans short video feed)
+  video_player: ^2.8.2
+
+  # HTTP / APIs
+  http: ^1.1.0
+
+  # Location (for Qibla Finder)
+  geolocator: ^13.0.1
+
+  # Compass (for live Qibla direction)
+  flutter_compass: ^0.8.0
+
+  # Supabase backend
+  supabase_flutter: ^2.5.6
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
   flutter_lints: ^6.0.0
+  flutter_launcher_icons: ^0.14.3
 
 flutter:
   uses-material-design: true
+
+  assets:
+    - assets/compass_arrow.png
+    - assets/videos/
+    - assets/icons/
+    - assets/audio/
+
+flutter_launcher_icons:
+  android: true
+  ios: true
+  image_path: "icon/WhatsApp Image 2026-02-16 at 18.05.21.jpeg"

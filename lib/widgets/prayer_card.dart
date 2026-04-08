@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../models/prayer_timing.dart';
+import '../theme/app_colors.dart';
 
 class PrayerCard extends StatelessWidget {
   final List<PrayerTiming> prayers;
@@ -11,12 +12,12 @@ class PrayerCard extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: AppColors.primaryGreen,
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: Colors.grey.shade200),
+        border: Border.all(color: AppColors.gold.withOpacity(0.5)),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.05),
+            color: Colors.black.withOpacity(0.3),
             blurRadius: 8,
             offset: const Offset(0, 2),
           ),
@@ -25,12 +26,22 @@ class PrayerCard extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text(
-            'Prayer Times',
-            style: TextStyle(
-              fontSize: 20,
-              fontWeight: FontWeight.bold,
-            ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(Icons.chevron_right, color: AppColors.gold, size: 24),
+              const SizedBox(width: 8),
+              const Text(
+                'Prayer Times',
+                style: TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                  color: AppColors.white,
+                ),
+              ),
+              const SizedBox(width: 8),
+              Icon(Icons.chevron_left, color: AppColors.gold, size: 24),
+            ],
           ),
           const SizedBox(height: 16),
           ...prayers.map((prayer) => _buildPrayerItem(context, prayer)),
@@ -53,15 +64,15 @@ class PrayerCard extends StatelessWidget {
                   style: const TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.bold,
-                    color: Color(0xFF1F7B4F),
+                    color: AppColors.gold,
                   ),
                 ),
                 const SizedBox(height: 2),
                 Text(
                   prayer.name,
-                  style: TextStyle(
+                  style: const TextStyle(
                     fontSize: 14,
-                    color: Colors.grey.shade600,
+                    color: AppColors.white70,
                   ),
                 ),
               ],
@@ -70,7 +81,7 @@ class PrayerCard extends StatelessWidget {
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
             decoration: BoxDecoration(
-              color: const Color(0xFF1F7B4F).withOpacity(0.1),
+              color: AppColors.accentGreen,
               borderRadius: BorderRadius.circular(8),
             ),
             child: Text(
@@ -78,7 +89,7 @@ class PrayerCard extends StatelessWidget {
               style: const TextStyle(
                 fontSize: 18,
                 fontWeight: FontWeight.bold,
-                color: Color(0xFF1F7B4F),
+                color: AppColors.white,
               ),
             ),
           ),

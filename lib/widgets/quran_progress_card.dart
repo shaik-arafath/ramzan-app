@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../theme/app_colors.dart';
 
 class QuranProgressCard extends StatelessWidget {
   final int day;
@@ -13,12 +14,12 @@ class QuranProgressCard extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: Colors.green.shade50,
+        color: AppColors.primaryGreen,
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: Colors.green.shade200),
+        border: Border.all(color: AppColors.gold.withOpacity(0.5)),
         boxShadow: [
           BoxShadow(
-            color: Colors.green.withOpacity(0.1),
+            color: Colors.black.withOpacity(0.3),
             blurRadius: 8,
             offset: const Offset(0, 2),
           ),
@@ -35,6 +36,7 @@ class QuranProgressCard extends StatelessWidget {
                 style: TextStyle(
                   fontSize: 18,
                   fontWeight: FontWeight.bold,
+                  color: AppColors.white,
                 ),
               ),
               Text(
@@ -42,7 +44,7 @@ class QuranProgressCard extends StatelessWidget {
                 style: const TextStyle(
                   fontSize: 18,
                   fontWeight: FontWeight.bold,
-                  color: Color(0xFF1F7B4F),
+                  color: AppColors.gold,
                 ),
               ),
             ],
@@ -53,8 +55,8 @@ class QuranProgressCard extends StatelessWidget {
             child: LinearProgressIndicator(
               value: progress / 100,
               minHeight: 12,
-              backgroundColor: Colors.green.shade100,
-              valueColor: const AlwaysStoppedAnimation<Color>(Color(0xFF1F7B4F)),
+              backgroundColor: AppColors.darkGreen,
+              valueColor: const AlwaysStoppedAnimation<Color>(AppColors.accentGreen),
             ),
           ),
           const SizedBox(height: 12),
@@ -63,9 +65,9 @@ class QuranProgressCard extends StatelessWidget {
             children: [
               Text(
                 'Day $day of 29',
-                style: TextStyle(
+                style: const TextStyle(
                   fontSize: 14,
-                  color: Colors.grey.shade700,
+                  color: AppColors.white70,
                 ),
               ),
               Text(
@@ -73,7 +75,7 @@ class QuranProgressCard extends StatelessWidget {
                 style: const TextStyle(
                   fontSize: 14,
                   fontWeight: FontWeight.bold,
-                  color: Color(0xFF1F7B4F),
+                  color: AppColors.gold,
                 ),
               ),
             ],
