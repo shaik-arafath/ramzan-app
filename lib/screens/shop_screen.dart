@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../models/product.dart';
 import '../data/product_data.dart';
+import '../services/product_service.dart';
 import '../providers/cart_provider.dart';
 import '../providers/wishlist_provider.dart';
 import '../theme/app_colors.dart';
@@ -18,12 +19,20 @@ class ShopScreen extends StatefulWidget {
 
 class _ShopScreenState extends State<ShopScreen> {
   String _selectedCategory = 'All';
+  final ProductService _productService = ProductService();
+  late Future<List<Product>> _productsFuture;
+  late Future<List<String>> _categoriesFuture;
+
+  @override
+  void initState() {
+    super.initState();
+    _productsFuture = _productService.fetchProductsByCategory(_selectedCategory);
+    _categoriesFuture = _productService.fetchCategories();
+  }
 
   @override
   Widget build(BuildContext context) {
     final cartProvider = Provider.of<CartProvider>(context);
-    final products = ProductData.getProductsByCategory(_selectedCategory);
-    final categories = ProductData.getCategories();
 
     return Scaffold(
       backgroundColor: AppColors.darkBlack,
@@ -72,150 +81,200 @@ class _ShopScreenState extends State<ShopScreen> {
           ),
         ],
       ),
-      body: CustomScrollView(
-        slivers: [
-          // Hero Banner
-          SliverToBoxAdapter(
-            child: Container(
-              height: 180,
-              margin: const EdgeInsets.all(20),
-              decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  colors: [
-                    AppColors.mediumBlack,
-                    AppColors.darkBlack,
-                  ],
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
-                ),
-                borderRadius: BorderRadius.circular(20),
-                border: Border.all(
-                  color: AppColors.gold.withOpacity(0.3),
+      body: FutureBuilder<List<String>>(
+        future: _categoriesFuture,
+        builder: (context, categorySnapshot) {
+          if (categorySnapshot.connectionState == ConnectionState.waiting) {
+            return const Center(child: CircularProgressIndicator(color: AppColors.gold));
+          }
+
+          if (categorySnapshot.hasError) {
+            return Center(child: Text('Error loading categories: ${categorySnapshot.error}'));
+          }
+
+          final categories = categorySnapshot.data ?? ['All'];
+
+          return CustomScrollView(
+            slivers: [
+              // Hero Banner
+              SliverToBoxAdapter(
+                child: Container(
+                  height: 180,
+                  margin: const EdgeInsets.all(20),
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      colors: [
+                        AppColors.mediumBlack,
+                        AppColors.darkBlack,
+                      ],
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
+                    ),
+                    borderRadius: BorderRadius.circular(20),
+                    border: Border.all(
+                      color: AppColors.gold.withOpacity(0.3),
+                    ),
+                  ),
+                  child: Stack(
+                    children: [
+                      Positioned(
+                        left: 20,
+                        top: 20,
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Container(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 12,
+                                vertical: 6,
+                              ),
+                              decoration: BoxDecoration(
+                                color: AppColors.gold,
+                                borderRadius: BorderRadius.circular(20),
+                              ),
+                              child: const Text(
+                                'Special Offer',
+                                style: TextStyle(
+                                  color: Colors.black,
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 12,
+                                ),
+                              ),
+                            ),
+                            const SizedBox(height: 8),
+                            const Text(
+                              'Ramadan\nCollection',
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 28,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            const SizedBox(height: 8),
+                            Text(
+                              'Up to 30% Off',
+                              style: TextStyle(
+                                color: Colors.white.withOpacity(0.7),
+                                fontSize: 16,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      Positioned(
+                        right: 20,
+                        bottom: 20,
+                        child: ElevatedButton(
+                          onPressed: () {
+                            setState(() {
+                              _selectedCategory = 'All';
+                              _productsFuture = _productService.fetchProductsByCategory('All');
+                            });
+                          },
+                          child: const Text('Shop Now'),
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               ),
-              child: Stack(
-                children: [
-                  Positioned(
-                    left: 20,
-                    top: 20,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Container(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 12,
-                            vertical: 6,
+
+              // Category Filter
+              SliverToBoxAdapter(
+                child: Container(
+                  height: 60,
+                  padding: const EdgeInsets.symmetric(horizontal: 20),
+                  child: ListView.builder(
+                    scrollDirection: Axis.horizontal,
+                    itemCount: categories.length,
+                    itemBuilder: (context, index) {
+                      final category = categories[index];
+                      final isSelected = category == _selectedCategory;
+                      return Padding(
+                        padding: const EdgeInsets.only(right: 12),
+                        child: FilterChip(
+                          label: Text(category),
+                          selected: isSelected,
+                          onSelected: (selected) {
+                            setState(() {
+                              _selectedCategory = category;
+                              _productsFuture = _productService.fetchProductsByCategory(category);
+                            });
+                          },
+                          selectedColor: AppColors.gold,
+                          checkmarkColor: Colors.black,
+                          backgroundColor: AppColors.mediumBlack,
+                          labelStyle: TextStyle(
+                            color: isSelected ? Colors.black : AppColors.white70,
                           ),
-                          decoration: BoxDecoration(
-                            color: AppColors.gold,
+                          shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(20),
                           ),
-                          child: const Text(
-                            'Special Offer',
-                            style: TextStyle(
-                              color: Colors.black,
-                              fontWeight: FontWeight.bold,
-                              fontSize: 12,
-                            ),
-                          ),
                         ),
-                        const SizedBox(height: 8),
-                        const Text(
-                          'Ramadan\nCollection',
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 28,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                        const SizedBox(height: 8),
-                        Text(
-                          'Up to 30% Off',
-                          style: TextStyle(
-                            color: Colors.white.withOpacity(0.7),
-                            fontSize: 16,
-                          ),
-                        ),
-                      ],
-                    ),
+                      );
+                    },
                   ),
-                  Positioned(
-                    right: 20,
-                    bottom: 20,
-                    child: ElevatedButton(
-                      onPressed: () {
-                        setState(() {
-                          _selectedCategory = 'All';
-                        });
-                      },
-                      child: const Text('Shop Now'),
-                    ),
-                  ),
-                ],
+                ),
               ),
-            ),
-          ),
 
-          // Category Filter
-          SliverToBoxAdapter(
-            child: Container(
-              height: 60,
-              padding: const EdgeInsets.symmetric(horizontal: 20),
-              child: ListView.builder(
-                scrollDirection: Axis.horizontal,
-                itemCount: categories.length,
-                itemBuilder: (context, index) {
-                  final category = categories[index];
-                  final isSelected = category == _selectedCategory;
-                  return Padding(
-                    padding: const EdgeInsets.only(right: 12),
-                    child: FilterChip(
-                      label: Text(category),
-                      selected: isSelected,
-                      onSelected: (selected) {
-                        setState(() {
-                          _selectedCategory = category;
-                        });
-                      },
-                      selectedColor: AppColors.gold,
-                      checkmarkColor: Colors.black,
-                      backgroundColor: AppColors.mediumBlack,
-                      labelStyle: TextStyle(
-                        color: isSelected ? Colors.black : AppColors.white70,
+              // Product Grid
+              FutureBuilder<List<Product>>(
+                future: _productsFuture,
+                builder: (context, productSnapshot) {
+                  if (productSnapshot.connectionState == ConnectionState.waiting) {
+                    return const SliverToBoxAdapter(
+                      child: Center(child: CircularProgressIndicator(color: AppColors.gold)),
+                    );
+                  }
+
+                  if (productSnapshot.hasError) {
+                    return SliverToBoxAdapter(
+                      child: Center(child: Text('Error loading products: ${productSnapshot.error}')),
+                    );
+                  }
+
+                  final products = productSnapshot.data ?? [];
+
+                  if (products.isEmpty) {
+                    return const SliverToBoxAdapter(
+                      child: Padding(
+                        padding: EdgeInsets.all(20),
+                        child: Center(
+                          child: Text(
+                            'No products available',
+                            style: TextStyle(color: Colors.white70),
+                          ),
+                        ),
                       ),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(20),
+                    );
+                  }
+
+                  return SliverPadding(
+                    padding: const EdgeInsets.symmetric(horizontal: 20),
+                    sliver: SliverGrid(
+                      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount: 2,
+                        childAspectRatio: 0.72,
+                        crossAxisSpacing: 16,
+                        mainAxisSpacing: 16,
+                      ),
+                      delegate: SliverChildBuilderDelegate(
+                        (context, index) {
+                          final product = products[index];
+                          return _buildProductCard(context, product, cartProvider);
+                        },
+                        childCount: products.length,
                       ),
                     ),
                   );
                 },
               ),
-            ),
-          ),
-
-          // Product Grid
-          SliverPadding(
-            padding: const EdgeInsets.symmetric(horizontal: 20),
-            sliver: SliverGrid(
-              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 2,
-                childAspectRatio: 0.72,
-                crossAxisSpacing: 16,
-                mainAxisSpacing: 16,
+              const SliverToBoxAdapter(
+                child: SizedBox(height: 20),
               ),
-              delegate: SliverChildBuilderDelegate(
-                (context, index) {
-                  final product = products[index];
-                  return _buildProductCard(context, product, cartProvider);
-                },
-                childCount: products.length,
-              ),
-            ),
-          ),
-          const SliverToBoxAdapter(
-            child: SizedBox(height: 20),
-          ),
-        ],
+            ],
+          );
+        },
       ),
     );
   }
