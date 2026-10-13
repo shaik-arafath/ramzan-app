@@ -1,11 +1,11 @@
 {
-    "name": "ramzan_app",
-    "short_name": "ramzan_app",
+    "name": "Halal World",
+    "short_name": "Halal World",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",
     "theme_color": "#0175C2",
-    "description": "A new Flutter project.",
+    "description": "Halal World - Islamic Shopping App with Prayer Times, Quran Tracker, Zikr, and Sunnah Learning",
     "orientation": "portrait-primary",
     "prefer_related_applications": false,
     "icons": [

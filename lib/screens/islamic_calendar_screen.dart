@@ -106,9 +106,9 @@ class _IslamicCalendarScreenState extends State<IslamicCalendarScreen> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Islamic Calendar'),
-        backgroundColor: AppColors.primaryGreen,
+        backgroundColor: AppColors.darkBlack,
       ),
-      backgroundColor: AppColors.skyDark,
+      backgroundColor: AppColors.darkBlack,
       body: Padding
         (
         padding: const EdgeInsets.all(16),
@@ -136,7 +136,7 @@ class _IslamicCalendarScreenState extends State<IslamicCalendarScreen> {
                         ElevatedButton(
                           onPressed: _loadTodayHijri,
                           style: ElevatedButton.styleFrom(
-                            backgroundColor: AppColors.primaryGreen,
+                            backgroundColor: AppColors.darkBlack,
                           ),
                           child: const Text('Retry'),
                         ),
@@ -172,8 +172,8 @@ class _IslamicCalendarScreenState extends State<IslamicCalendarScreen> {
                           borderRadius: BorderRadius.circular(16),
                           gradient: LinearGradient(
                             colors: [
-                              AppColors.primaryGreen,
-                              AppColors.darkGreen,
+                              AppColors.darkBlack,
+                              AppColors.lightBlack,
                             ],
                             begin: Alignment.topLeft,
                             end: Alignment.bottomRight,
@@ -517,7 +517,7 @@ class _DayCell extends StatelessWidget {
         decoration: BoxDecoration(
           color: isToday
               ? AppColors.gold
-              : AppColors.primaryGreen.withOpacity(0.8),
+              : AppColors.darkBlack.withOpacity(0.8),
           borderRadius: BorderRadius.circular(6),
           border: isToday
               ? Border.all(color: AppColors.white, width: 1.5)
@@ -526,7 +526,7 @@ class _DayCell extends StatelessWidget {
         child: Text(
           '$day',
           style: TextStyle(
-            color: isToday ? AppColors.skyDark : AppColors.white,
+            color: isToday ? AppColors.darkBlack : AppColors.white,
             fontSize: 12,
             fontWeight: isToday ? FontWeight.bold : FontWeight.normal,
           ),

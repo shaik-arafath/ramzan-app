@@ -11,12 +11,12 @@ class SunnahCard extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: AppColors.primaryGreen,
+        color: AppColors.darkBlack,
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: AppColors.gold.withOpacity(0.5)),
+        border: Border.all(color: AppColors.gold, width: 2),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.3),
+            color: AppColors.black,
             blurRadius: 8,
             offset: const Offset(0, 2),
           ),

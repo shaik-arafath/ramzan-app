@@ -27,9 +27,9 @@ class _SunnahLessonsScreenState extends State<SunnahLessonsScreen> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Sunnah Lessons'),
-        backgroundColor: AppColors.primaryGreen,
+        backgroundColor: AppColors.darkBlack,
       ),
-      backgroundColor: AppColors.skyDark,
+      backgroundColor: AppColors.darkBlack,
       body: Padding(
         padding: const EdgeInsets.all(16),
         child: SingleChildScrollView(
@@ -48,7 +48,7 @@ class _SunnahLessonsScreenState extends State<SunnahLessonsScreen> {
               Container(
                 padding: const EdgeInsets.all(16),
                 decoration: BoxDecoration(
-                  color: AppColors.primaryGreen,
+                  color: AppColors.darkBlack,
                   borderRadius: BorderRadius.circular(16),
                   border: Border.all(color: AppColors.gold.withOpacity(0.5), width: 1),
                   boxShadow: [

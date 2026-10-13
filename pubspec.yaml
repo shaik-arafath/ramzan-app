@@ -1,5 +1,5 @@
-name: ramzan_app
-description: "Ramadan Planner App with Prayer Times, Quran Tracker, Zikr, and Sunnah Learning"
+name: halal_world
+description: "Halal World - Islamic Shopping App with Prayer Times, Quran Tracker, Zikr, and Sunnah Learning"
 publish_to: 'none'
 
 version: 1.0.0+1
@@ -35,9 +35,11 @@ dependencies:
 
   # Video playback (for Bayans short video feed)
   video_player: ^2.8.2
+  webview_flutter: ^4.4.2
 
   # HTTP / APIs
   http: ^1.1.0
+  url_launcher: ^6.3.0
 
   # Location (for Qibla Finder)
   geolocator: ^13.0.1
@@ -47,6 +49,9 @@ dependencies:
 
   # Supabase backend
   supabase_flutter: ^2.5.6
+
+dependency_overrides:
+  path_provider: ^2.1.4
 
 dev_dependencies:
   flutter_test:
@@ -59,11 +64,12 @@ flutter:
 
   assets:
     - assets/compass_arrow.png
-    - assets/videos/
-    - assets/icons/
+    - assets/app_icon.png
     - assets/audio/
+    - assets/icons/
+    - assets/images/
 
 flutter_launcher_icons:
   android: true
   ios: true
-  image_path: "icon/WhatsApp Image 2026-02-16 at 18.05.21.jpeg"
+  image_path: "assets/app_icon.png"

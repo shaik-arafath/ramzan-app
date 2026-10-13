@@ -2,6 +2,8 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:video_player/video_player.dart';
+import 'package:webview_flutter/webview_flutter.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../theme/app_colors.dart';
 import '../services/supabase_content_service.dart';
@@ -22,6 +24,10 @@ class _BayansFeedScreenState extends State<BayansFeedScreen> {
 
   // Map from bayan ID to its video controller.
   final Map<String, VideoPlayerController> _controllers = {};
+  // Map from bayan ID to webview controller
+  final Map<String, WebViewController> _webControllers = {};
+  // Map from bayan ID to error message
+  final Map<String, String> _errors = {};
   late PageController _pageController;
   int _currentIndex = 0;
   final Set<int> _liked = {};
@@ -35,16 +41,69 @@ class _BayansFeedScreenState extends State<BayansFeedScreen> {
     _pageController = PageController(initialPage: _currentIndex);
   }
 
+  bool _isInstagramUrl(String url) {
+    return url.contains('instagram.com') || url.contains('instagr.am');
+  }
+
   Future<void> _initControllerForDoc(String id, String videoUrl) async {
+    if (_isInstagramUrl(videoUrl)) {
+      // Use WebView for Instagram
+      if (_webControllers.containsKey(id)) return;
+      print('Initializing WebView for Instagram URL: $videoUrl');
+      final controller = WebViewController()
+        ..setJavaScriptMode(JavaScriptMode.unrestricted)
+        ..setNavigationDelegate(
+          NavigationDelegate(
+            onPageStarted: (String url) {
+              print('Page started loading: $url');
+            },
+            onPageFinished: (String url) {
+              print('Page finished loading: $url');
+            },
+          ),
+        )
+        ..loadRequest(Uri.parse(videoUrl));
+      _webControllers[id] = controller;
+      _errors.remove(id);
+      if (mounted) {
+        setState(() {});
+      }
+      return;
+    }
+
+    // Use VideoPlayer for direct video URLs
     if (_controllers.containsKey(id)) return;
 
-    final controller = VideoPlayerController.networkUrl(Uri.parse(videoUrl));
-    _controllers[id] = controller;
-    await controller.initialize();
-    controller.setLooping(true);
-    await controller.play();
-    if (mounted) {
-      setState(() {});
+    print('Initializing video controller for $id with URL: $videoUrl');
+    try {
+      final controller = VideoPlayerController.networkUrl(
+        Uri.parse(videoUrl),
+        videoPlayerOptions: VideoPlayerOptions(mixWithOthers: true),
+      );
+      _controllers[id] = controller;
+
+      // Add timeout to prevent indefinite loading
+      await controller.initialize().timeout(
+        const Duration(seconds: 30),
+        onTimeout: () {
+          throw Exception('Video initialization timeout');
+        },
+      );
+
+      controller.setLooping(true);
+      await controller.play();
+      print('Video initialized and playing for $id');
+      _errors.remove(id);
+      if (mounted) {
+        setState(() {});
+      }
+    } catch (e) {
+      print('Error initializing video for $id: $e');
+      _controllers.remove(id);
+      _errors[id] = e.toString();
+      if (mounted) {
+        setState(() {});
+      }
     }
   }
 
@@ -57,6 +116,9 @@ class _BayansFeedScreenState extends State<BayansFeedScreen> {
   void dispose() {
     for (final c in _controllers.values) {
       c.dispose();
+    }
+    for (final c in _webControllers.values) {
+      // WebViewController doesn't need explicit disposal
     }
     _pageController.dispose();
     super.dispose();
@@ -132,7 +194,7 @@ class _BayansFeedScreenState extends State<BayansFeedScreen> {
 
               // Ensure only the currently visible page's video is playing to
               // avoid overlapping audio or mismatched sound.
-              if (controller != null && controller.value.isInitialized) {
+              if (!_isInstagramUrl(videoUrl) && controller != null && controller.value.isInitialized) {
                 if (index == _currentIndex) {
                   if (!controller.value.isPlaying) {
                     controller.play();
@@ -147,21 +209,85 @@ class _BayansFeedScreenState extends State<BayansFeedScreen> {
               return Stack(
                 fit: StackFit.expand,
                 children: [
-                  GestureDetector(
-                    onTap: () => _togglePlayPause(id),
-                    child: controller != null && controller.value.isInitialized
-                        ? FittedBox(
-                            fit: BoxFit.cover,
-                            child: SizedBox(
-                              width: controller.value.size.width,
-                              height: controller.value.size.height,
-                              child: VideoPlayer(controller),
-                            ),
-                          )
-                        : const Center(
-                            child: CircularProgressIndicator(color: AppColors.gold),
-                          ),
-                  ),
+                  _isInstagramUrl(videoUrl)
+                      ? _webControllers.containsKey(id)
+                          ? WebViewWidget(controller: _webControllers[id]!)
+                          : const Center(
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  CircularProgressIndicator(color: AppColors.gold),
+                                  SizedBox(height: 16),
+                                  Text(
+                                    'Loading Instagram...',
+                                    style: TextStyle(color: Colors.white70),
+                                  ),
+                                ],
+                              ),
+                            )
+                      : GestureDetector(
+                          onTap: () => _togglePlayPause(id),
+                          child: controller != null && controller.value.isInitialized
+                              ? FittedBox(
+                                  fit: BoxFit.cover,
+                                  child: SizedBox(
+                                    width: controller.value.size.width,
+                                    height: controller.value.size.height,
+                                    child: VideoPlayer(controller),
+                                  ),
+                                )
+                              : _errors.containsKey(id)
+                                  ? Center(
+                                      child: Padding(
+                                        padding: const EdgeInsets.all(16),
+                                        child: Column(
+                                          mainAxisAlignment: MainAxisAlignment.center,
+                                          children: [
+                                            const Icon(Icons.error_outline, color: Colors.red, size: 48),
+                                            const SizedBox(height: 16),
+                                            Text(
+                                              'Error loading video',
+                                              style: const TextStyle(color: Colors.white, fontSize: 16),
+                                            ),
+                                            const SizedBox(height: 8),
+                                            Text(
+                                              _errors[id]!,
+                                              style: const TextStyle(color: Colors.white70, fontSize: 12),
+                                              textAlign: TextAlign.center,
+                                            ),
+                                            const SizedBox(height: 16),
+                                            Text(
+                                              'URL: $videoUrl',
+                                              style: const TextStyle(color: Colors.white70, fontSize: 10),
+                                              textAlign: TextAlign.center,
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    )
+                                  : Center(
+                                      child: Padding(
+                                        padding: const EdgeInsets.all(16),
+                                        child: Column(
+                                          mainAxisAlignment: MainAxisAlignment.center,
+                                          children: [
+                                            const CircularProgressIndicator(color: AppColors.gold),
+                                            const SizedBox(height: 16),
+                                            const Text(
+                                              'Loading video...',
+                                              style: TextStyle(color: Colors.white70),
+                                            ),
+                                            const SizedBox(height: 8),
+                                            Text(
+                                              'URL: $videoUrl',
+                                              style: const TextStyle(color: Colors.white70, fontSize: 10),
+                                              textAlign: TextAlign.center,
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                        ),
                   Positioned(
                     left: 16,
                     bottom: 32,
@@ -242,6 +368,21 @@ class _BayansFeedScreenState extends State<BayansFeedScreen> {
                           },
                           icon: const Icon(Icons.share, color: Colors.white, size: 28),
                         ),
+                        const SizedBox(height: 8),
+                        if (_isInstagramUrl(videoUrl))
+                          IconButton(
+                            onPressed: () async {
+                              final uri = Uri.parse(videoUrl);
+                              if (await canLaunchUrl(uri)) {
+                                await launchUrl(uri, mode: LaunchMode.externalApplication);
+                              } else {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(content: Text('Could not open $videoUrl')),
+                                );
+                              }
+                            },
+                            icon: const Icon(Icons.open_in_new, color: Colors.white, size: 28),
+                          ),
                       ],
                     ),
                   ),

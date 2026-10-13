@@ -66,9 +66,9 @@ class _QiblaFinderScreenState extends State<QiblaFinderScreen> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Qibla Finder'),
-        backgroundColor: AppColors.primaryGreen,
+        backgroundColor: AppColors.darkBlack,
       ),
-      backgroundColor: AppColors.skyDark,
+      backgroundColor: AppColors.darkBlack,
       body: _qiblaDirection == null
           ? const Center(
               child: CircularProgressIndicator(color: AppColors.gold),

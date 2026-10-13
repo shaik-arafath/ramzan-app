@@ -145,14 +145,14 @@ class _TasbeehCounterScreenState extends State<TasbeehCounterScreen> {
       context: context,
       builder: (context) {
         return AlertDialog(
-          backgroundColor: AppColors.skyDark,
+          backgroundColor: AppColors.darkBlack,
           title: const Text(
             'Reset counter?',
-            style: TextStyle(color: AppColors.white),
+            style: TextStyle(color: AppColors.silver),
           ),
           content: const Text(
             'This will reset the current dhikr count to 0.',
-            style: TextStyle(color: AppColors.white70),
+            style: TextStyle(color: AppColors.silver70),
           ),
           actions: [
             TextButton(
@@ -206,9 +206,9 @@ class _TasbeehCounterScreenState extends State<TasbeehCounterScreen> {
       return Scaffold(
         appBar: AppBar(
           title: const Text('Tasbeeh Counter'),
-          backgroundColor: AppColors.primaryGreen,
+          backgroundColor: AppColors.darkBlack,
         ),
-        backgroundColor: AppColors.skyDark,
+        backgroundColor: AppColors.darkBlack,
         body: const Center(
           child: CircularProgressIndicator(color: AppColors.gold),
         ),
@@ -218,7 +218,7 @@ class _TasbeehCounterScreenState extends State<TasbeehCounterScreen> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Tasbeeh Counter'),
-        backgroundColor: AppColors.primaryGreen,
+        backgroundColor: AppColors.darkBlack,
         actions: [
           IconButton(
             onPressed: _openHistory,
@@ -226,7 +226,7 @@ class _TasbeehCounterScreenState extends State<TasbeehCounterScreen> {
           ),
         ],
       ),
-      backgroundColor: AppColors.skyDark,
+      backgroundColor: AppColors.darkBlack,
       body: Padding(
         padding: const EdgeInsets.all(16),
         child: Column(
@@ -244,10 +244,10 @@ class _TasbeehCounterScreenState extends State<TasbeehCounterScreen> {
                       label: Text(dhikr),
                       selected: selected,
                       labelStyle: TextStyle(
-                        color: selected ? AppColors.skyDark : AppColors.white,
+                        color: selected ? AppColors.darkBlack : AppColors.silver,
                       ),
                       selectedColor: AppColors.gold,
-                      backgroundColor: AppColors.primaryGreen,
+                      backgroundColor: AppColors.darkBlack,
                       onSelected: (_) => _changeDhikr(dhikr),
                     ),
                   );
@@ -260,7 +260,7 @@ class _TasbeehCounterScreenState extends State<TasbeehCounterScreen> {
             Text(
               '$_selectedDhikr',
               style: const TextStyle(
-                color: AppColors.white,
+                color: AppColors.silver,
                 fontSize: 18,
                 fontWeight: FontWeight.bold,
               ),
@@ -268,7 +268,7 @@ class _TasbeehCounterScreenState extends State<TasbeehCounterScreen> {
             const SizedBox(height: 4),
             Text(
               '$_currentCount / $_currentTarget',
-              style: const TextStyle(color: AppColors.white70),
+              style: const TextStyle(color: AppColors.silver70),
             ),
             const SizedBox(height: 8),
             ClipRRect(
@@ -276,7 +276,7 @@ class _TasbeehCounterScreenState extends State<TasbeehCounterScreen> {
               child: LinearProgressIndicator(
                 value: _targetProgress,
                 minHeight: 8,
-                backgroundColor: AppColors.skyDark,
+                backgroundColor: AppColors.darkBlack,
                 valueColor: const AlwaysStoppedAnimation<Color>(AppColors.gold),
               ),
             ),
@@ -295,7 +295,7 @@ class _TasbeehCounterScreenState extends State<TasbeehCounterScreen> {
                       CircularProgressIndicator(
                         value: _dailyGoalProgress,
                         strokeWidth: 6,
-                        backgroundColor: AppColors.primaryGreen,
+                        backgroundColor: AppColors.darkBlack,
                         valueColor: const AlwaysStoppedAnimation<Color>(AppColors.gold),
                       ),
                       Column(
@@ -304,7 +304,7 @@ class _TasbeehCounterScreenState extends State<TasbeehCounterScreen> {
                           Text(
                             _todayTotal.toString(),
                             style: const TextStyle(
-                              color: AppColors.white,
+                              color: AppColors.silver,
                               fontSize: 14,
                               fontWeight: FontWeight.bold,
                             ),
@@ -312,7 +312,7 @@ class _TasbeehCounterScreenState extends State<TasbeehCounterScreen> {
                           const Text(
                             'Today',
                             style: TextStyle(
-                              color: AppColors.white70,
+                              color: AppColors.silver70,
                               fontSize: 10,
                             ),
                           ),
@@ -330,7 +330,7 @@ class _TasbeehCounterScreenState extends State<TasbeehCounterScreen> {
                         children: [
                           const Text(
                             'Daily goal:',
-                            style: TextStyle(color: AppColors.white70),
+                            style: TextStyle(color: AppColors.silver70),
                           ),
                           const SizedBox(width: 8),
                           Expanded(
@@ -361,7 +361,7 @@ class _TasbeehCounterScreenState extends State<TasbeehCounterScreen> {
                           ),
                           const Text(
                             'Vibrate on tap',
-                            style: TextStyle(color: AppColors.white70),
+                            style: TextStyle(color: AppColors.silver70),
                           ),
                         ],
                       ),
@@ -376,7 +376,7 @@ class _TasbeehCounterScreenState extends State<TasbeehCounterScreen> {
                           ),
                           const Text(
                             'Sound on tap',
-                            style: TextStyle(color: AppColors.white70),
+                            style: TextStyle(color: AppColors.silver70),
                           ),
                         ],
                       ),
@@ -391,7 +391,7 @@ class _TasbeehCounterScreenState extends State<TasbeehCounterScreen> {
                           ),
                           const Text(
                             'Auto reset when complete',
-                            style: TextStyle(color: AppColors.white70),
+                            style: TextStyle(color: AppColors.silver70),
                           ),
                         ],
                       ),
@@ -421,8 +421,8 @@ class _TasbeehCounterScreenState extends State<TasbeehCounterScreen> {
                       shape: BoxShape.circle,
                       gradient: RadialGradient(
                         colors: [
-                          AppColors.primaryGreen.withOpacity(0.8),
-                          AppColors.skyDark,
+                          AppColors.darkBlack.withOpacity(0.8),
+                          AppColors.darkBlack,
                         ],
                         center: Alignment.topLeft,
                         radius: 1.0,
@@ -439,7 +439,7 @@ class _TasbeehCounterScreenState extends State<TasbeehCounterScreen> {
                       child: Text(
                         '$_currentCount',
                         style: const TextStyle(
-                          color: AppColors.white,
+                          color: AppColors.silver,
                           fontSize: 56,
                           fontWeight: FontWeight.bold,
                         ),
@@ -458,15 +458,15 @@ class _TasbeehCounterScreenState extends State<TasbeehCounterScreen> {
               children: [
                 TextButton.icon(
                   onPressed: _confirmReset,
-                  icon: const Icon(Icons.refresh, color: AppColors.white70),
+                  icon: const Icon(Icons.refresh, color: AppColors.silver70),
                   label: const Text(
                     'Reset',
-                    style: TextStyle(color: AppColors.white70),
+                    style: TextStyle(color: AppColors.silver70),
                   ),
                 ),
                 Text(
                   'Swipe right: -1, Long press: +10',
-                  style: const TextStyle(color: AppColors.white70, fontSize: 12),
+                  style: const TextStyle(color: AppColors.silver70, fontSize: 12),
                 ),
               ],
             ),
@@ -496,14 +496,14 @@ class TasbeehHistoryScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Dhikr History'),
-        backgroundColor: AppColors.primaryGreen,
+        backgroundColor: AppColors.darkBlack,
       ),
-      backgroundColor: AppColors.skyDark,
+      backgroundColor: AppColors.darkBlack,
       body: sorted.isEmpty
           ? const Center(
               child: Text(
                 'No history yet',
-                style: TextStyle(color: AppColors.white70),
+                style: TextStyle(color: AppColors.silver70),
               ),
             )
           : ListView.separated(
@@ -524,14 +524,14 @@ class TasbeehHistoryScreen extends StatelessWidget {
                 return ListTile(
                   title: Text(
                     date,
-                    style: const TextStyle(color: AppColors.white),
+                    style: const TextStyle(color: AppColors.silver),
                   ),
                   subtitle: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
                         '$total dhikr',
-                        style: const TextStyle(color: AppColors.white70),
+                        style: const TextStyle(color: AppColors.silver70),
                       ),
                       const SizedBox(height: 4),
                       if (entries.isNotEmpty)
@@ -543,7 +543,7 @@ class TasbeehHistoryScreen extends StatelessWidget {
                                 (e) => Text(
                                   '${e.key}: ${e.value}',
                                   style: const TextStyle(
-                                    color: AppColors.white70,
+                                    color: AppColors.silver70,
                                     fontSize: 12,
                                   ),
                                 ),

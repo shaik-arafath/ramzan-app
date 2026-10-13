@@ -1,17 +1,20 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'services/prayer_time_service.dart';
 import 'services/notification_service.dart';
 import 'screens/home_screen.dart';
+import 'providers/cart_provider.dart';
+import 'providers/auth_provider.dart';
+import 'providers/wishlist_provider.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   // Initialize Supabase
   await Supabase.initialize(
-    url: 'https://epwhtdzdokrzrpwltvir.supabase.co',
-    anonKey: 'sb_publishable_9vCD3TjH-9bESl5A4edMtw_qnCbHLE4',
+    url: 'https://eiocioyxmrywqwilxxho.supabase.co',
+    anonKey: 'sb_publishable_YUSUwyG-hlJ5eulkxcRjzA_Bvm5VuCR',
   );
 
   // Initialize notification service
@@ -33,10 +36,15 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider.value(
-      value: prayerTimeService,
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider.value(value: prayerTimeService),
+        ChangeNotifierProvider(create: (_) => CartProvider()),
+        ChangeNotifierProvider(create: (_) => AuthProvider()),
+        ChangeNotifierProvider(create: (_) => WishlistProvider()),
+      ],
       child: MaterialApp(
-        title: 'Ramadan Planner',
+        title: 'Halal World',
         debugShowCheckedModeBanner: false,
         theme: ThemeData(
           useMaterial3: true,

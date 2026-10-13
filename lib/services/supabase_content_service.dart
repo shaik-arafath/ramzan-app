@@ -18,7 +18,12 @@ class SupabaseContentService {
         .order('published_at', ascending: false);
 
     final data = response as List<dynamic>;
-    return data.map((row) => Bayan.fromMap(row as Map<String, dynamic>)).toList();
+    final bayans = data.map((row) => Bayan.fromMap(row as Map<String, dynamic>)).toList();
+    print('Fetched ${bayans.length} bayans');
+    for (var bayan in bayans) {
+      print('Bayan: ${bayan.title}, URL: ${bayan.videoUrl}');
+    }
+    return bayans;
   }
 
   /// Fetches notification messages from the 'notifications' table.

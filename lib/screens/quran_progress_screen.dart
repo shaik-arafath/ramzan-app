@@ -164,7 +164,7 @@ class _QuranProgressScreenState extends State<QuranProgressScreen> {
       context: context,
       builder: (context) {
         return AlertDialog(
-          backgroundColor: AppColors.skyDark,
+          backgroundColor: AppColors.darkBlack,
           title: const Text(
             'Add pages',
             style: TextStyle(color: AppColors.white),
@@ -223,7 +223,7 @@ class _QuranProgressScreenState extends State<QuranProgressScreen> {
       context: context,
       builder: (context) {
         return AlertDialog(
-          backgroundColor: AppColors.skyDark,
+          backgroundColor: AppColors.darkBlack,
           title: const Text(
             'Change daily target',
             style: TextStyle(color: AppColors.white),
@@ -300,9 +300,9 @@ class _QuranProgressScreenState extends State<QuranProgressScreen> {
       return Scaffold(
         appBar: AppBar(
           title: const Text('Quran Progress'),
-          backgroundColor: AppColors.primaryGreen,
+          backgroundColor: AppColors.darkBlack,
         ),
-        backgroundColor: AppColors.skyDark,
+        backgroundColor: AppColors.darkBlack,
         body: const Center(
           child: CircularProgressIndicator(color: AppColors.gold),
         ),
@@ -314,9 +314,9 @@ class _QuranProgressScreenState extends State<QuranProgressScreen> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Quran Progress'),
-        backgroundColor: AppColors.primaryGreen,
+        backgroundColor: AppColors.darkBlack,
       ),
-      backgroundColor: AppColors.skyDark,
+      backgroundColor: AppColors.darkBlack,
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16),
         child: Column(
@@ -343,7 +343,7 @@ class _QuranProgressScreenState extends State<QuranProgressScreen> {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: AppColors.primaryGreen,
+        color: AppColors.darkBlack,
         borderRadius: BorderRadius.circular(16),
         border: Border.all(color: AppColors.gold.withOpacity(0.5)),
         boxShadow: [
@@ -375,7 +375,7 @@ class _QuranProgressScreenState extends State<QuranProgressScreen> {
                 CircularProgressIndicator(
                   value: _overallCompletionPercent,
                   strokeWidth: 8,
-                  backgroundColor: AppColors.darkGreen,
+                  backgroundColor: AppColors.lightBlack,
                   valueColor: const AlwaysStoppedAnimation<Color>(AppColors.gold),
                 ),
                 Column(
@@ -410,7 +410,7 @@ class _QuranProgressScreenState extends State<QuranProgressScreen> {
               );
             },
             style: ElevatedButton.styleFrom(
-              backgroundColor: AppColors.accentGreen,
+              backgroundColor: AppColors.gold,
               foregroundColor: AppColors.white,
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(12),
@@ -432,7 +432,7 @@ class _QuranProgressScreenState extends State<QuranProgressScreen> {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: AppColors.primaryGreen,
+        color: AppColors.darkBlack,
         borderRadius: BorderRadius.circular(16),
         border: Border.all(color: AppColors.gold.withOpacity(0.5)),
         boxShadow: [
@@ -470,8 +470,8 @@ class _QuranProgressScreenState extends State<QuranProgressScreen> {
             child: LinearProgressIndicator(
               value: progress,
               minHeight: 10,
-              backgroundColor: AppColors.darkGreen,
-              valueColor: const AlwaysStoppedAnimation<Color>(AppColors.accentGreen),
+              backgroundColor: AppColors.lightBlack,
+              valueColor: const AlwaysStoppedAnimation<Color>(AppColors.gold),
             ),
           ),
           const SizedBox(height: 16),
@@ -481,7 +481,7 @@ class _QuranProgressScreenState extends State<QuranProgressScreen> {
                 child: ElevatedButton.icon(
                   onPressed: _markTodayCompleted,
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: AppColors.accentGreen,
+                    backgroundColor: AppColors.gold,
                     foregroundColor: AppColors.white,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(12),
@@ -519,7 +519,7 @@ class _QuranProgressScreenState extends State<QuranProgressScreen> {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: AppColors.primaryGreen,
+        color: AppColors.darkBlack,
         borderRadius: BorderRadius.circular(16),
         border: Border.all(color: AppColors.gold.withOpacity(0.5)),
       ),
@@ -553,14 +553,14 @@ class _QuranProgressScreenState extends State<QuranProgressScreen> {
               Color textColor;
 
               if (completed) {
-                bg = AppColors.accentGreen;
+                bg = AppColors.gold;
                 textColor = AppColors.white;
               } else if (isCurrent) {
-                bg = AppColors.skyMid;
+                bg = AppColors.mediumBlack;
                 textColor = AppColors.white;
                 borderColor = AppColors.gold;
               } else {
-                bg = AppColors.darkGreen;
+                bg = AppColors.lightBlack;
                 textColor = AppColors.white70;
               }
 
@@ -592,7 +592,7 @@ class _QuranProgressScreenState extends State<QuranProgressScreen> {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: AppColors.primaryGreen,
+        color: AppColors.darkBlack,
         borderRadius: BorderRadius.circular(16),
         border: Border.all(color: AppColors.gold.withOpacity(0.5)),
       ),
@@ -628,7 +628,7 @@ class _QuranProgressScreenState extends State<QuranProgressScreen> {
       return Container(
         padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
-          color: AppColors.primaryGreen,
+          color: AppColors.darkBlack,
           borderRadius: BorderRadius.circular(16),
           border: Border.all(color: AppColors.gold.withOpacity(0.5)),
         ),
@@ -645,7 +645,7 @@ class _QuranProgressScreenState extends State<QuranProgressScreen> {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: AppColors.primaryGreen,
+        color: AppColors.darkBlack,
         borderRadius: BorderRadius.circular(16),
         border: Border.all(color: AppColors.gold.withOpacity(0.5)),
       ),

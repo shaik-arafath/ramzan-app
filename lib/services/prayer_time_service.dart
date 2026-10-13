@@ -191,7 +191,8 @@ class PrayerTimeService extends ChangeNotifier {
 
       // Normalize input, supports formats like:
       // '05:30', '5:30', '5', '5 am', '5:30 pm', '17:45'
-      final cleaned = timeStr.trim().toLowerCase();
+      // '5:35 AM', '5:35am', '5 : 35 am', '5 : 35 AM', etc.
+      final cleaned = timeStr.trim().toLowerCase().replaceAll(' ', '');
 
       bool isPm = cleaned.contains('pm');
       bool isAm = cleaned.contains('am');
@@ -228,6 +229,7 @@ class PrayerTimeService extends ChangeNotifier {
 
       return DateTime(now.year, now.month, now.day, hour, minute);
     } catch (e) {
+      debugPrint('Error parsing time "$timeStr": $e');
       return null;
     }
   }

@@ -26,10 +26,10 @@ class _BayansListScreenState extends State<BayansListScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: AppColors.skyDark,
+        backgroundColor: AppColors.darkBlack,
         title: const Text('Bayans'),
       ),
-      backgroundColor: AppColors.skyDark,
+      backgroundColor: AppColors.darkBlack,
       body: FutureBuilder<List<Bayan>>(
         future: _futureBayans,
         builder: (context, snapshot) {

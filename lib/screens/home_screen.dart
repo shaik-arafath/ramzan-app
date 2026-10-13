@@ -3,19 +3,19 @@ import 'dart:math' as math;
 import 'dart:async';
 import 'package:intl/intl.dart';
 import 'package:flutter/services.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:video_player/video_player.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:provider/provider.dart';
 import '../models/prayer_timing.dart';
 import '../data/prayer_timings_data.dart';
 import '../data/ramadan_tips_data.dart';
 import '../theme/app_colors.dart';
+import '../widgets/app_image.dart';
 import '../widgets/prayer_card.dart';
 import '../widgets/quran_progress_card.dart';
 import '../widgets/zikr_card.dart';
 import '../widgets/sunnah_card.dart';
 import '../services/supabase_content_service.dart';
-import 'package:provider/provider.dart';
 import '../services/prayer_time_service.dart';
 import 'daily_quran_screen.dart';
 import 'dua_azkar_screen.dart';
@@ -27,6 +27,16 @@ import 'daily_goals_screen.dart';
 import 'quran_progress_screen.dart';
 import 'bayans_feed_screen.dart';
 import 'bayans_list_screen.dart';
+import 'shop_screen.dart';
+import 'cart_screen.dart';
+import '../providers/cart_provider.dart';
+import '../data/product_data.dart';
+import '../models/product.dart';
+import 'login_screen.dart';
+import 'admin_dashboard_screen.dart';
+import '../providers/auth_provider.dart';
+import 'profile_screen.dart';
+import 'sunnah_shop_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -35,7 +45,7 @@ class HomeScreen extends StatefulWidget {
   State<HomeScreen> createState() => _HomeScreenState();
 }
 
-class _HomeScreenState extends State<HomeScreen> {
+class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateMixin {
   RamadanDay? _todayData;
   int _tipIndex = 0;
   PageController? _prayerPageController;
@@ -51,6 +61,10 @@ class _HomeScreenState extends State<HomeScreen> {
   String? _iftarTimeOverride;
   Map<String, String>? _prayerTimeOverrides;
 
+  // Animation controller
+  late AnimationController _pulseController;
+  late Animation<double> _pulseAnimation;
+
   static const MethodChannel _adhanChannel =
       MethodChannel('com.ramzan_app/adhan_scheduler');
 
@@ -59,14 +73,34 @@ class _HomeScreenState extends State<HomeScreen> {
     super.initState();
     _loadTodayData();
 
+    // Initialize pulse animation
+    _pulseController = AnimationController(
+      duration: const Duration(milliseconds: 1500),
+      vsync: this,
+    )..repeat(reverse: true);
+
+    _pulseAnimation = Tween<double>(begin: 1.0, end: 1.1).animate(
+      CurvedAnimation(parent: _pulseController, curve: Curves.easeInOut),
+    );
+
     _prayerPageController = PageController();
-    _startPrayerAutoScroll();
+    // Auto-scroll disabled temporarily to prevent errors
+    // _startPrayerAutoScroll();
     // Load remote config/timetable after first frame so UI can appear quickly.
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _loadRemoteTimetable();
       _initHeaderVideo();
       _loadNotificationBadge();
     });
+  }
+
+  @override
+  void dispose() {
+    _pulseController.dispose();
+    _prayerPageController?.dispose();
+    _prayerAutoScrollTimer?.cancel();
+    _headerVideoController?.dispose();
+    super.dispose();
   }
 
   Future<void> _loadNotificationBadge() async {
@@ -175,8 +209,16 @@ class _HomeScreenState extends State<HomeScreen> {
 
   Future<void> _loadRemoteTimetable() async {
     try {
+      print('Fetching remote timetable...');
       final data = await _contentService.fetchTimetable();
-      if (data == null) return;
+      print('Remote timetable data: $data');
+      if (data == null) {
+        print('Remote timetable data is null');
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Remote timetable data is null')),
+        );
+        return;
+      }
       final sehri = data['sehri_time'] as String?;
       final iftar = data['iftar_time'] as String?;
       final prayers = {
@@ -186,13 +228,43 @@ class _HomeScreenState extends State<HomeScreen> {
         'Maghrib': data['maghrib'] as String? ?? '',
         'Isha': data['isha'] as String? ?? '',
       };
+      print('Prayer times from DB: $prayers');
 
       // Update local UI state
       setState(() {
         _sehriTimeOverride = sehri;
         _iftarTimeOverride = iftar;
         _prayerTimeOverrides = prayers;
+
+        // Update local prayer times with database values
+        if (_todayData != null) {
+          final updatedPrayers = _todayData!.prayers.map((prayer) {
+            final override = prayers[prayer.name];
+            if (override != null && override.isNotEmpty) {
+              return PrayerTiming(
+                name: prayer.name,
+                time: override,
+                arabicName: prayer.arabicName,
+              );
+            }
+            return prayer;
+          }).toList();
+          _todayData = RamadanDay(
+            day: _todayData!.day,
+            date: _todayData!.date,
+            sehriTime: _todayData!.sehriTime,
+            iftarTime: _todayData!.iftarTime,
+            prayers: updatedPrayers,
+            juzNumber: _todayData!.juzNumber,
+            zikr: _todayData!.zikr,
+            sunnah: _todayData!.sunnah,
+          );
+        }
       });
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Loaded prayer times: $prayers')),
+      );
 
       // Also inform PrayerTimeService so sounds follow the same admin times
       final pts = Provider.of<PrayerTimeService>(context, listen: false);
@@ -204,7 +276,11 @@ class _HomeScreenState extends State<HomeScreen> {
 
       // Schedule native Android alarms so adhan/siren work even when app is closed
       await _scheduleNativeAlarms(sehri, iftar, prayers);
-    } catch (_) {
+    } catch (e) {
+      print('Error loading remote timetable: $e');
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Error: $e')),
+      );
       // Ignore remote timetable errors and keep local data.
     }
   }
@@ -242,7 +318,7 @@ class _HomeScreenState extends State<HomeScreen> {
       final count = _todayData!.prayers.length;
       _prayerPageIndex = (_prayerPageIndex + 1) % count;
       final controller = _prayerPageController;
-      if (controller == null) return;
+      if (controller == null || !controller.hasClients) return;
       controller.animateToPage(
         _prayerPageIndex,
         duration: const Duration(milliseconds: 400),
@@ -251,13 +327,6 @@ class _HomeScreenState extends State<HomeScreen> {
     });
   }
 
-  @override
-  void dispose() {
-    _prayerAutoScrollTimer?.cancel();
-    _prayerPageController?.dispose();
-    _headerVideoController?.dispose();
-    super.dispose();
-  }
 
   String _to12Hour(String time24) {
     final parts = time24.split(':');
@@ -293,7 +362,7 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     if (_todayData == null) {
       return Scaffold(
-        backgroundColor: AppColors.darkGreen,
+        backgroundColor: AppColors.lightBlack,
         body: const Center(
           child: CircularProgressIndicator(color: AppColors.gold),
         ),
@@ -301,11 +370,11 @@ class _HomeScreenState extends State<HomeScreen> {
     }
 
     return Scaffold(
-      backgroundColor: AppColors.skyDark,
+      backgroundColor: AppColors.darkBlack,
       body: RefreshIndicator(
         onRefresh: () async => _loadTodayData(),
         color: AppColors.gold,
-        backgroundColor: AppColors.mediumGreen,
+        backgroundColor: AppColors.mediumBlack,
         child: CustomScrollView(
           physics: const AlwaysScrollableScrollPhysics(),
           slivers: [
@@ -321,6 +390,8 @@ class _HomeScreenState extends State<HomeScreen> {
                     _buildSehriIftarCards(),
                     const SizedBox(height: 20),
                     _buildNextPrayerCard(),
+                    const SizedBox(height: 20),
+                    _buildFeaturedProducts(),
                     const SizedBox(height: 20),
                     _buildFeatureGrid(),
                     const SizedBox(height: 20),
@@ -339,6 +410,23 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
             ),
           ],
+        ),
+      ),
+      floatingActionButton: FloatingActionButton.extended(
+        onPressed: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => const ShopScreen()),
+          );
+        },
+        backgroundColor: const Color(0xFFE8B931),
+        icon: const Icon(Icons.shopping_bag, color: Colors.black),
+        label: const Text(
+          'Shop',
+          style: TextStyle(
+            color: Colors.black,
+            fontWeight: FontWeight.bold,
+          ),
         ),
       ),
     );
@@ -392,22 +480,220 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Widget _buildSettingsIcon() {
+    return Consumer<AuthProvider>(
+      builder: (context, authProvider, child) {
+        return InkWell(
+          borderRadius: BorderRadius.circular(20),
+          onTap: () {
+            if (authProvider.isAuthenticated) {
+              if (authProvider.isAdmin) {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const AdminDashboardScreen()),
+                );
+              } else {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => ProfileScreen()),
+                );
+              }
+            } else {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => ProfileScreen()),
+              );
+            }
+          },
+          child: Container(
+            padding: const EdgeInsets.all(6),
+            decoration: BoxDecoration(
+              color: Colors.black.withOpacity(0.35),
+              shape: BoxShape.circle,
+            ),
+            child: Icon(
+              authProvider.isAuthenticated && authProvider.isAdmin
+                  ? Icons.admin_panel_settings
+                  : authProvider.isAuthenticated
+                      ? Icons.account_circle
+                      : Icons.login,
+              color: Colors.white,
+              size: 20,
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  Widget _buildCartIcon(CartProvider cartProvider) {
     return InkWell(
       borderRadius: BorderRadius.circular(20),
-      onTap: _showSettingsSheet,
-      child: Container(
-        padding: const EdgeInsets.all(6),
-        decoration: BoxDecoration(
-          color: Colors.black.withOpacity(0.35),
-          shape: BoxShape.circle,
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => const CartScreen()),
+        );
+      },
+      child: Stack(
+        clipBehavior: Clip.none,
+        children: [
+          Container(
+            padding: const EdgeInsets.all(6),
+            decoration: BoxDecoration(
+              color: Colors.black.withOpacity(0.35),
+              shape: BoxShape.circle,
+            ),
+            child: const Icon(
+              Icons.shopping_cart,
+              color: Colors.white,
+              size: 20,
+            ),
+          ),
+          if (cartProvider.itemCount > 0)
+            Positioned(
+              right: -2,
+              top: -2,
+              child: AnimatedBuilder(
+                animation: _pulseAnimation,
+                builder: (context, child) {
+                  return Transform.scale(
+                    scale: _pulseAnimation.value,
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                      decoration: BoxDecoration(
+                        color: const Color(0xFFE8B931),
+                        borderRadius: BorderRadius.circular(10),
+                        boxShadow: [
+                          BoxShadow(
+                            color: const Color(0xFFE8B931).withOpacity(0.5),
+                            blurRadius: 8,
+                            spreadRadius: 2,
+                          ),
+                        ],
+                      ),
+                      child: Text(
+                        cartProvider.itemCount > 9 ? '9+' : '${cartProvider.itemCount}',
+                        style: const TextStyle(
+                          color: Colors.black,
+                          fontSize: 10,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                  );
+                },
+              ),
+            ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildShopIcon() {
+    return FadeTransition(
+      opacity: _pulseAnimation,
+      child: ScaleTransition(
+        scale: _pulseAnimation,
+        child: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              colors: [AppColors.gold, AppColors.goldLight],
+            ),
+            borderRadius: BorderRadius.circular(20),
+            boxShadow: [
+              BoxShadow(
+                color: AppColors.gold.withOpacity(0.5 * _pulseAnimation.value),
+                blurRadius: 10,
+                spreadRadius: 2,
+              ),
+            ],
+          ),
+          child: InkWell(
+            onTap: _showShopSelectionDialog,
+            borderRadius: BorderRadius.circular(20),
+            child: const Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Icon(
+                  Icons.store,
+                  color: Colors.black,
+                  size: 18,
+                ),
+                SizedBox(width: 6),
+                Text(
+                  'Shop',
+                  style: TextStyle(
+                    color: Colors.black,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 14,
+                  ),
+                ),
+              ],
+            ),
+          ),
         ),
-        child: Image.asset(
-          'assets/icons/pngwing29.png',
-          height: 20,
-          width: 20,
-          fit: BoxFit.contain,
-          color: Colors.white,
-          colorBlendMode: BlendMode.srcIn,
+      ),
+    );
+  }
+
+  void _showShopSelectionDialog() {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        backgroundColor: AppColors.darkBlack,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(16),
+          side: BorderSide(
+            color: AppColors.gold,
+            width: 2,
+          ),
+        ),
+        title: const Text(
+          'Select Shop',
+          style: TextStyle(color: AppColors.gold, fontWeight: FontWeight.bold),
+        ),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            ListTile(
+              leading: const Icon(Icons.checkroom, color: AppColors.gold),
+              title: const Text(
+                'Clothing',
+                style: TextStyle(color: Colors.white),
+              ),
+              subtitle: const Text(
+                'Islamic clothing & apparel',
+                style: TextStyle(color: AppColors.silver),
+              ),
+              onTap: () {
+                Navigator.pop(context);
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const ShopScreen()),
+                );
+              },
+            ),
+            const Divider(color: AppColors.silver),
+            ListTile(
+              leading: const Icon(Icons.menu_book, color: AppColors.gold),
+              title: const Text(
+                'Sunnah Store',
+                style: TextStyle(color: Colors.white),
+              ),
+              subtitle: const Text(
+                'Qur\'an & Hadith products with evidence',
+                style: TextStyle(color: AppColors.silver),
+              ),
+              onTap: () {
+                Navigator.pop(context);
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const SunnahShopScreen()),
+                );
+              },
+            ),
+          ],
         ),
       ),
     );
@@ -418,7 +704,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
     await showModalBottomSheet(
       context: context,
-      backgroundColor: AppColors.skyDark,
+      backgroundColor: AppColors.darkBlack,
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
       ),
@@ -510,7 +796,7 @@ class _HomeScreenState extends State<HomeScreen> {
   void _showSettingsSheet() {
     showModalBottomSheet(
       context: context,
-      backgroundColor: AppColors.skyDark,
+      backgroundColor: AppColors.darkBlack,
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
       ),
@@ -578,45 +864,85 @@ class _HomeScreenState extends State<HomeScreen> {
     return SliverToBoxAdapter(
       child: Container(
         height: 220,
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            colors: [
+              AppColors.black,
+              AppColors.darkBlack,
+              AppColors.mediumBlack,
+            ],
+          ),
+          borderRadius: const BorderRadius.only(
+            bottomLeft: Radius.circular(32),
+            bottomRight: Radius.circular(32),
+          ),
+          border: Border.all(
+            color: AppColors.gold,
+            width: 2,
+          ),
+          boxShadow: [
+            BoxShadow(
+              color: AppColors.gold.withOpacity(0.3),
+              blurRadius: 20,
+              spreadRadius: 5,
+            ),
+          ],
+        ),
         child: Stack(
           children: [
-            // Background image with soft dark overlay
-            Positioned.fill(
-              child: ClipRRect(
-                borderRadius: const BorderRadius.only(
-                  bottomLeft: Radius.circular(32),
-                  bottomRight: Radius.circular(32),
-                ),
-                child: Image.asset(
-                  'assets/icons/pngwing30.png',
-                  fit: BoxFit.cover,
-                  // Move background slightly further up so top part is more visible
-                  alignment: const Alignment(0, -0.8),
-                ),
-              ),
-            ),
-            // Centered Jamia Masjid logo, tinted white
+            // Halal World text logo
             Align(
               alignment: Alignment.center,
-              child: Image.asset(
-                'assets/icons/WhatsApp_Image_2026-02-18_at_01.56.26-removebg-preview (1).png',
-                height: 170,
-                fit: BoxFit.contain,
-                color: Colors.white,
-                colorBlendMode: BlendMode.srcIn,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    'Halal World',
+                    style: TextStyle(
+                      fontSize: 42,
+                      fontWeight: FontWeight.bold,
+                      color: AppColors.gold,
+                      shadows: [
+                        Shadow(
+                          color: AppColors.gold.withOpacity(0.5),
+                          blurRadius: 20,
+                        ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  Text(
+                    'Islamic Shopping App',
+                    style: TextStyle(
+                      fontSize: 16,
+                      color: AppColors.silver,
+                      letterSpacing: 2,
+                    ),
+                  ),
+                ],
               ),
             ),
-            // Top-right notification & settings icons inside header
+            // Top-right notification, shop, cart & settings icons inside header
             Positioned(
               top: 40,
               right: 16,
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  _buildNotificationIcon(),
-                  const SizedBox(width: 12),
-                  _buildSettingsIcon(),
-                ],
+              child: Consumer<CartProvider>(
+                builder: (context, cartProvider, child) {
+                  return Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      _buildShopIcon(),
+                      const SizedBox(width: 12),
+                      _buildNotificationIcon(),
+                      const SizedBox(width: 12),
+                      _buildCartIcon(cartProvider),
+                      const SizedBox(width: 12),
+                      _buildSettingsIcon(),
+                    ],
+                  );
+                },
               ),
             ),
           ],
@@ -674,6 +1000,206 @@ class _HomeScreenState extends State<HomeScreen> {
     return Icon(Icons.chevron_right, color: AppColors.gold, size: 28);
   }
 
+  Widget _buildFeaturedProducts() {
+    final featuredProducts = ProductData.getProducts().take(4).toList();
+    final cartProvider = Provider.of<CartProvider>(context);
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            const Text(
+              'Featured Products',
+              style: TextStyle(
+                fontSize: 20,
+                fontWeight: FontWeight.bold,
+                color: Colors.white,
+              ),
+            ),
+            AnimatedContainer(
+              duration: const Duration(milliseconds: 200),
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+              decoration: BoxDecoration(
+                color: AppColors.gold.withOpacity(0.2),
+                borderRadius: BorderRadius.circular(20),
+                border: Border.all(color: AppColors.gold),
+              ),
+              child: InkWell(
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => const ShopScreen()),
+                  );
+                },
+                child: const Text(
+                  'View All',
+                  style: TextStyle(
+                    color: AppColors.gold,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
+        const SizedBox(height: 12),
+        SizedBox(
+          height: 200,
+          child: ListView.builder(
+            scrollDirection: Axis.horizontal,
+            itemCount: featuredProducts.length,
+            itemBuilder: (context, index) {
+              final product = featuredProducts[index];
+              return Container(
+                width: 160,
+                margin: const EdgeInsets.only(right: 12),
+                child: _buildFeaturedProductCard(product, cartProvider),
+              );
+            },
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildFeaturedProductCard(Product product, CartProvider cartProvider) {
+    return Container(
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [
+            const Color(0xFF1E3A5F),
+            const Color(0xFF0A1628),
+          ],
+        ),
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(
+          color: const Color(0xFFE8B931).withOpacity(0.3),
+          width: 1,
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: const Color(0xFFE8B931).withOpacity(0.1),
+            blurRadius: 10,
+            offset: const Offset(0, 4),
+          ),
+        ],
+      ),
+      child: InkWell(
+        onTap: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => ShopScreen(),
+            ),
+          );
+        },
+        borderRadius: BorderRadius.circular(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Expanded(
+              child: ClipRRect(
+                borderRadius: const BorderRadius.vertical(
+                  top: Radius.circular(16),
+                ),
+                child: AppImage(
+                  source: product.imageUrl,
+                  fit: BoxFit.cover,
+                  width: double.infinity,
+                  iconSize: 30,
+                ),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(10),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    product.name,
+                    style: const TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 12,
+                      color: Colors.white,
+                    ),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                  const SizedBox(height: 4),
+                  Row(
+                    children: [
+                      const Icon(
+                        Icons.star,
+                        size: 10,
+                        color: Color(0xFFE8B931),
+                      ),
+                      const SizedBox(width: 4),
+                      Text(
+                        product.rating.toString(),
+                        style: const TextStyle(fontSize: 10, color: Colors.white70),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 4),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        '\$${product.price.toStringAsFixed(2)}',
+                        style: const TextStyle(
+                          color: Color(0xFFE8B931),
+                          fontWeight: FontWeight.bold,
+                          fontSize: 14,
+                        ),
+                      ),
+                      AnimatedContainer(
+                        duration: const Duration(milliseconds: 200),
+                        padding: const EdgeInsets.all(6),
+                        decoration: BoxDecoration(
+                          color: const Color(0xFFE8B931),
+                          shape: BoxShape.circle,
+                          boxShadow: [
+                            BoxShadow(
+                              color: const Color(0xFFE8B931).withOpacity(0.5),
+                              blurRadius: 8,
+                              spreadRadius: 2,
+                            ),
+                          ],
+                        ),
+                        child: InkWell(
+                          onTap: () {
+                            cartProvider.addItem(product);
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content: Text('${product.name} added to cart'),
+                                duration: const Duration(seconds: 1),
+                                backgroundColor: const Color(0xFFE8B931),
+                                behavior: SnackBarBehavior.floating,
+                              ),
+                            );
+                          },
+                          child: const Icon(
+                            Icons.add,
+                            size: 14,
+                            color: Colors.black,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
   Widget _buildSehriIftarCards() {
     return Stack(
       clipBehavior: Clip.none,
@@ -694,7 +1220,7 @@ class _HomeScreenState extends State<HomeScreen> {
             child: Container(
               padding: const EdgeInsets.all(8),
               decoration: BoxDecoration(
-                color: AppColors.skyDark,
+                color: AppColors.darkBlack,
                 shape: BoxShape.circle,
                 boxShadow: [
                   BoxShadow(color: AppColors.gold.withOpacity(0.3), blurRadius: 12, spreadRadius: 2),
@@ -712,7 +1238,7 @@ class _HomeScreenState extends State<HomeScreen> {
     return Container(
       padding: const EdgeInsets.fromLTRB(16, 28, 16, 16),
       decoration: BoxDecoration(
-        color: AppColors.primaryGreen,
+        color: AppColors.darkBlack,
         borderRadius: BorderRadius.circular(16),
         boxShadow: [
           BoxShadow(color: Colors.black.withOpacity(0.3), blurRadius: 8, offset: const Offset(0, 4)),
@@ -742,10 +1268,10 @@ class _HomeScreenState extends State<HomeScreen> {
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
             decoration: BoxDecoration(
-              color: AppColors.accentGreen,
+              color: AppColors.gold,
               borderRadius: BorderRadius.circular(8),
             ),
-            child: const Text('Siren Alert', style: TextStyle(color: AppColors.white, fontSize: 12, fontWeight: FontWeight.w600)),
+            child: const Text('Siren Alert', style: TextStyle(color: Colors.black, fontSize: 12, fontWeight: FontWeight.w700)),
           ),
         ],
       ),
@@ -759,7 +1285,7 @@ class _HomeScreenState extends State<HomeScreen> {
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: AppColors.primaryGreen,
+        color: AppColors.darkBlack,
         borderRadius: BorderRadius.circular(16),
         boxShadow: [
           BoxShadow(color: Colors.black.withOpacity(0.3), blurRadius: 8, offset: const Offset(0, 4)),
@@ -775,9 +1301,9 @@ class _HomeScreenState extends State<HomeScreen> {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
-                Icon(Icons.landscape, color: AppColors.darkGreen.withOpacity(0.5), size: 40),
+                Icon(Icons.landscape, color: AppColors.lightBlack.withOpacity(0.5), size: 40),
                 Icon(Icons.nightlight_round, color: AppColors.gold.withOpacity(0.4), size: 24),
-                Icon(Icons.landscape, color: AppColors.darkGreen.withOpacity(0.5), size: 40),
+                Icon(Icons.landscape, color: AppColors.lightBlack.withOpacity(0.5), size: 40),
               ],
             ),
           ),
@@ -843,10 +1369,10 @@ class _HomeScreenState extends State<HomeScreen> {
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                 decoration: BoxDecoration(
-                  color: AppColors.accentGreen,
+                  color: AppColors.gold,
                   borderRadius: BorderRadius.circular(8),
                 ),
-                child: const Text('Adhan Reminder', style: TextStyle(color: AppColors.white, fontSize: 14, fontWeight: FontWeight.w600)),
+                child: const Text('Adhan Reminder', style: TextStyle(color: Colors.black, fontSize: 14, fontWeight: FontWeight.w700)),
               ),
             ],
           ),
@@ -943,7 +1469,7 @@ class _HomeScreenState extends State<HomeScreen> {
       child: Container(
           padding: const EdgeInsets.all(16),
           decoration: BoxDecoration(
-            color: AppColors.primaryGreen,
+            color: AppColors.darkBlack,
             borderRadius: BorderRadius.circular(12),
             border: Border.all(color: AppColors.gold, width: 1),
             boxShadow: [
@@ -1019,7 +1545,7 @@ class _HomeScreenState extends State<HomeScreen> {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: isGoals ? AppColors.mediumGreen : AppColors.primaryGreen,
+        color: isGoals ? AppColors.mediumBlack : AppColors.darkBlack,
         borderRadius: BorderRadius.circular(16),
         border: Border.all(color: AppColors.gold.withOpacity(0.5), width: 1),
         boxShadow: [
@@ -1048,14 +1574,14 @@ class _HomeScreenState extends State<HomeScreen> {
             child: LinearProgressIndicator(
               value: progress,
               minHeight: 6,
-              backgroundColor: AppColors.darkGreen,
-              valueColor: const AlwaysStoppedAnimation<Color>(AppColors.accentGreen),
+              backgroundColor: AppColors.lightBlack,
+              valueColor: const AlwaysStoppedAnimation<Color>(AppColors.gold),
             ),
           ),
           if (isGoals) ...[
             const SizedBox(height: 8),
             Row(
-              children: List.generate(2, (_) => const Icon(Icons.check_circle, color: AppColors.accentGreen, size: 16)),
+              children: List.generate(2, (_) => const Icon(Icons.check_circle, color: AppColors.gold, size: 16)),
             ),
           ],
           const SizedBox(height: 12),
@@ -1065,12 +1591,12 @@ class _HomeScreenState extends State<HomeScreen> {
             child: Container(
               padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
               decoration: BoxDecoration(
-                color: isGoals ? AppColors.iftarOrange : AppColors.accentGreen,
+                color: isGoals ? AppColors.gold : AppColors.gold,
                 borderRadius: BorderRadius.circular(8),
               ),
               child: Text(
                 buttonLabel,
-                style: const TextStyle(color: AppColors.white, fontSize: 12, fontWeight: FontWeight.w600),
+                style: const TextStyle(color: Colors.black, fontSize: 12, fontWeight: FontWeight.w700),
               ),
             ),
           ),
@@ -1093,7 +1619,7 @@ class _HomeScreenState extends State<HomeScreen> {
       child: Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: AppColors.primaryGreen.withOpacity(0.85),
+        color: AppColors.darkBlack.withOpacity(0.85),
         borderRadius: BorderRadius.circular(16),
         border: Border.all(color: AppColors.gold.withOpacity(0.5), width: 1),
         boxShadow: [
@@ -1155,7 +1681,7 @@ class _HomeScreenState extends State<HomeScreen> {
 class _MosqueSilhouettePainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
-    final paint = Paint()..color = AppColors.darkGreen;
+    final paint = Paint()..color = AppColors.lightBlack;
     final w = size.width;
     final h = size.height;
     final path = Path();

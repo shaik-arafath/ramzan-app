@@ -209,9 +209,9 @@ class _DailyGoalsScreenState extends State<DailyGoalsScreen> {
       return Scaffold(
         appBar: AppBar(
           title: const Text('Daily Goals'),
-          backgroundColor: AppColors.primaryGreen,
+          backgroundColor: AppColors.darkBlack,
         ),
-        backgroundColor: AppColors.skyDark,
+        backgroundColor: AppColors.darkBlack,
         body: const Center(
           child: CircularProgressIndicator(color: AppColors.gold),
         ),
@@ -221,9 +221,9 @@ class _DailyGoalsScreenState extends State<DailyGoalsScreen> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Daily Goals'),
-        backgroundColor: AppColors.primaryGreen,
+        backgroundColor: AppColors.darkBlack,
       ),
-      backgroundColor: AppColors.skyDark,
+      backgroundColor: AppColors.darkBlack,
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16),
         child: Column(
@@ -273,7 +273,7 @@ class _DailyGoalsScreenState extends State<DailyGoalsScreen> {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: AppColors.primaryGreen,
+        color: AppColors.darkBlack,
         borderRadius: BorderRadius.circular(16),
         border: Border.all(color: AppColors.gold.withOpacity(0.5)),
         boxShadow: [
@@ -316,8 +316,8 @@ class _DailyGoalsScreenState extends State<DailyGoalsScreen> {
             child: LinearProgressIndicator(
               value: progress,
               minHeight: 10,
-              backgroundColor: AppColors.darkGreen,
-              valueColor: const AlwaysStoppedAnimation<Color>(AppColors.accentGreen),
+              backgroundColor: AppColors.lightBlack,
+              valueColor: const AlwaysStoppedAnimation<Color>(AppColors.gold),
             ),
           ),
         ],
@@ -334,7 +334,7 @@ class _DailyGoalsScreenState extends State<DailyGoalsScreen> {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: AppColors.primaryGreen,
+        color: AppColors.darkBlack,
         borderRadius: BorderRadius.circular(16),
         border: Border.all(color: AppColors.gold.withOpacity(0.5)),
       ),
@@ -370,8 +370,8 @@ class _DailyGoalsScreenState extends State<DailyGoalsScreen> {
             child: LinearProgressIndicator(
               value: progress,
               minHeight: 8,
-              backgroundColor: AppColors.darkGreen,
-              valueColor: const AlwaysStoppedAnimation<Color>(AppColors.accentGreen),
+              backgroundColor: AppColors.lightBlack,
+              valueColor: const AlwaysStoppedAnimation<Color>(AppColors.gold),
             ),
           ),
           const SizedBox(height: 12),
@@ -385,7 +385,7 @@ class _DailyGoalsScreenState extends State<DailyGoalsScreen> {
                   );
                 },
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: AppColors.accentGreen,
+                  backgroundColor: AppColors.gold,
                   foregroundColor: AppColors.white,
                 ),
                 child: const Text('Start Reading'),
@@ -402,7 +402,7 @@ class _DailyGoalsScreenState extends State<DailyGoalsScreen> {
                         });
                         _saveState();
                       },
-                      activeColor: AppColors.accentGreen,
+                      activeColor: AppColors.gold,
                     ),
                     const Expanded(
                       child: Text(
@@ -440,7 +440,7 @@ class _DailyGoalsScreenState extends State<DailyGoalsScreen> {
                       context: context,
                       builder: (context) {
                         return AlertDialog(
-                          backgroundColor: AppColors.skyDark,
+                          backgroundColor: AppColors.darkBlack,
                           title: const Text('Change Quran pages target', style: TextStyle(color: AppColors.white)),
                           content: TextField(
                             controller: controller,
@@ -486,7 +486,7 @@ class _DailyGoalsScreenState extends State<DailyGoalsScreen> {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: AppColors.primaryGreen,
+        color: AppColors.darkBlack,
         borderRadius: BorderRadius.circular(16),
         border: Border.all(color: AppColors.gold.withOpacity(0.5)),
       ),
@@ -508,7 +508,7 @@ class _DailyGoalsScreenState extends State<DailyGoalsScreen> {
               child: Container(
                 padding: const EdgeInsets.all(8),
                 decoration: BoxDecoration(
-                  color: AppColors.darkGreen,
+                  color: AppColors.lightBlack,
                   borderRadius: BorderRadius.circular(12),
                 ),
                 child: Column(
@@ -527,7 +527,7 @@ class _DailyGoalsScreenState extends State<DailyGoalsScreen> {
                       children: [
                         Checkbox(
                           value: _prayed[p] ?? false,
-                          activeColor: AppColors.accentGreen,
+                          activeColor: AppColors.gold,
                           onChanged: (v) {
                             setState(() {
                               _prayed[p] = v ?? false;
@@ -551,7 +551,7 @@ class _DailyGoalsScreenState extends State<DailyGoalsScreen> {
                         const SizedBox(width: 8),
                         Checkbox(
                           value: _onTime[p] ?? false,
-                          activeColor: AppColors.accentGreen,
+                          activeColor: AppColors.gold,
                           onChanged: (v) {
                             setState(() {
                               _onTime[p] = v ?? false;
@@ -580,7 +580,7 @@ class _DailyGoalsScreenState extends State<DailyGoalsScreen> {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: AppColors.primaryGreen,
+        color: AppColors.darkBlack,
         borderRadius: BorderRadius.circular(16),
         border: Border.all(color: AppColors.gold.withOpacity(0.5)),
       ),
@@ -612,7 +612,7 @@ class _DailyGoalsScreenState extends State<DailyGoalsScreen> {
                     CircularProgressIndicator(
                       value: progress,
                       strokeWidth: 6,
-                      backgroundColor: AppColors.darkGreen,
+                      backgroundColor: AppColors.lightBlack,
                       valueColor: const AlwaysStoppedAnimation<Color>(AppColors.gold),
                     ),
                     Column(
@@ -643,7 +643,7 @@ class _DailyGoalsScreenState extends State<DailyGoalsScreen> {
                         _saveState();
                       },
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: AppColors.accentGreen,
+                        backgroundColor: AppColors.gold,
                         foregroundColor: AppColors.white,
                       ),
                       child: const Text('Counter'),
@@ -656,7 +656,7 @@ class _DailyGoalsScreenState extends State<DailyGoalsScreen> {
                           context: context,
                           builder: (context) {
                             return AlertDialog(
-                              backgroundColor: AppColors.skyDark,
+                              backgroundColor: AppColors.darkBlack,
                               title: const Text('Change Zikr target', style: TextStyle(color: AppColors.white)),
                               content: TextField(
                                 controller: controller,
@@ -704,7 +704,7 @@ class _DailyGoalsScreenState extends State<DailyGoalsScreen> {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: AppColors.primaryGreen,
+        color: AppColors.darkBlack,
         borderRadius: BorderRadius.circular(16),
         border: Border.all(color: AppColors.gold.withOpacity(0.5)),
       ),
@@ -743,7 +743,7 @@ class _DailyGoalsScreenState extends State<DailyGoalsScreen> {
               const SizedBox(width: 8),
               Checkbox(
                 value: _duaMemorized,
-                activeColor: AppColors.accentGreen,
+                activeColor: AppColors.gold,
                 onChanged: (v) {
                   setState(() {
                     _duaMemorized = v ?? false;
@@ -763,7 +763,7 @@ class _DailyGoalsScreenState extends State<DailyGoalsScreen> {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: AppColors.primaryGreen,
+        color: AppColors.darkBlack,
         borderRadius: BorderRadius.circular(16),
         border: Border.all(color: AppColors.gold.withOpacity(0.5)),
       ),
@@ -799,7 +799,7 @@ class _DailyGoalsScreenState extends State<DailyGoalsScreen> {
                   _saveState();
                 },
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: AppColors.accentGreen,
+                  backgroundColor: AppColors.gold,
                   foregroundColor: AppColors.white,
                 ),
                 child: const Text('Mark Completed'),
@@ -818,7 +818,7 @@ class _DailyGoalsScreenState extends State<DailyGoalsScreen> {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: AppColors.primaryGreen,
+        color: AppColors.darkBlack,
         borderRadius: BorderRadius.circular(16),
         border: Border.all(color: AppColors.gold.withOpacity(0.5)),
       ),
@@ -840,7 +840,7 @@ class _DailyGoalsScreenState extends State<DailyGoalsScreen> {
               const SizedBox(width: 8),
               Switch(
                 value: _fastCompleted,
-                activeColor: AppColors.accentGreen,
+                activeColor: AppColors.gold,
                 onChanged: (v) {
                   setState(() {
                     _fastCompleted = v;
@@ -881,7 +881,7 @@ class _DailyGoalsScreenState extends State<DailyGoalsScreen> {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: AppColors.primaryGreen,
+        color: AppColors.darkBlack,
         borderRadius: BorderRadius.circular(16),
         border: Border.all(color: AppColors.gold.withOpacity(0.5)),
       ),
@@ -947,7 +947,7 @@ class _DailyGoalsScreenState extends State<DailyGoalsScreen> {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: AppColors.primaryGreen,
+        color: AppColors.darkBlack,
         borderRadius: BorderRadius.circular(16),
         border: Border.all(color: AppColors.gold.withOpacity(0.5)),
       ),
@@ -992,7 +992,7 @@ class _DailyGoalsScreenState extends State<DailyGoalsScreen> {
                   .map(
                     (b) => Chip(
                       label: Text(b),
-                      backgroundColor: AppColors.darkGreen,
+                      backgroundColor: AppColors.lightBlack,
                       labelStyle: const TextStyle(color: AppColors.white, fontSize: 12),
                     ),
                   )

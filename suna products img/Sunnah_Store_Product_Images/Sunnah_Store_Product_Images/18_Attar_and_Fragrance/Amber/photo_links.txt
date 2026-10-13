@@ -1,0 +1,6 @@
+Free-licence photo search (check licence before use):
+https://unsplash.com/s/photos/Amber
+https://www.pexels.com/search/Amber/
+https://pixabay.com/images/search/Amber/
+
+Save your chosen photo here as main.jpg

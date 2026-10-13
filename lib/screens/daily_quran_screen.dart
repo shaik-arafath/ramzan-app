@@ -28,9 +28,9 @@ class _DailyQuranScreenState extends State<DailyQuranScreen> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Daily Quran'),
-        backgroundColor: AppColors.primaryGreen,
+        backgroundColor: AppColors.darkBlack,
       ),
-      backgroundColor: AppColors.skyDark,
+      backgroundColor: AppColors.darkBlack,
       body: FutureBuilder<List<QuranSurah>>(
         future: _futureSurahs,
         builder: (context, snapshot) {
@@ -201,9 +201,9 @@ class _SurahDetailScreenState extends State<SurahDetailScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.surah.name),
-        backgroundColor: AppColors.primaryGreen,
+        backgroundColor: AppColors.darkBlack,
       ),
-      backgroundColor: AppColors.skyDark,
+      backgroundColor: AppColors.darkBlack,
       body: FutureBuilder<List<QuranVerse>>(
         future: _futureVerses,
         builder: (context, snapshot) {
@@ -275,7 +275,7 @@ class _SurahDetailScreenState extends State<SurahDetailScreen> {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: AppColors.primaryGreen,
+        color: AppColors.darkBlack,
         boxShadow: [
           BoxShadow(
             color: Colors.black.withOpacity(0.3),
@@ -317,8 +317,8 @@ class _SurahDetailScreenState extends State<SurahDetailScreen> {
             child: LinearProgressIndicator(
               value: _audioProgress,
               minHeight: 8,
-              backgroundColor: AppColors.darkGreen,
-              valueColor: const AlwaysStoppedAnimation<Color>(AppColors.accentGreen),
+              backgroundColor: AppColors.lightBlack,
+              valueColor: const AlwaysStoppedAnimation<Color>(AppColors.gold),
             ),
           ),
           const SizedBox(height: 6),
