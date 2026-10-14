@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
 import '../theme/app_colors.dart';
 import '../services/auth_service.dart';
 import '../providers/auth_provider.dart';
@@ -35,13 +34,13 @@ class _LoginScreenState extends State<LoginScreen> {
 
     try {
       print('Attempting login with email: ${_emailController.text.trim()}');
-      final authService = Provider.of<AuthService>(context, listen: false);
+      final authService = AuthService();
       final authProvider = Provider.of<AuthProvider>(context, listen: false);
       final response = await authService.signIn(
         email: _emailController.text.trim(),
         password: _passwordController.text,
       );
-      
+
       print('Login response: ${response.user?.email}');
 
       if (mounted) {
@@ -57,21 +56,21 @@ class _LoginScreenState extends State<LoginScreen> {
       if (mounted) {
         String errorMessage = 'Login failed';
         final errorStr = e.toString();
-        
+
         print('Error string: $errorStr');
-        
+
         if (errorStr.contains('Invalid login credentials') || errorStr.contains('invalid_credentials')) {
           errorMessage = 'Invalid email or password';
         } else if (errorStr.contains('Email not confirmed') || errorStr.contains('email_not_confirmed')) {
           errorMessage = 'Please confirm your email first';
         } else if (errorStr.contains('User not found') || errorStr.contains('user_not_found')) {
           errorMessage = 'No account found with this email';
-        } else if (errorStr.contains('minifide') || errorStr.contains('pa')) {
-          errorMessage = 'Database connection error. Please try again.';
+        } else if (errorStr.contains('AuthRetryableFetchException') || errorStr.contains('Failed to fetch')) {
+          errorMessage = 'Network error. Please check your internet connection.';
         } else {
           errorMessage = 'Login failed: $errorStr';
         }
-        
+
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text(errorMessage),
