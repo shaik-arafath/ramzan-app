@@ -2,18 +2,171 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../providers/cart_provider.dart';
 import '../models/cart_item.dart';
+import '../models/address.dart';
+import '../models/order.dart';
 import '../widgets/app_image.dart';
-import 'checkout_screen.dart';
+import '../services/address_service.dart';
+import '../services/order_service.dart';
+import '../theme/app_colors.dart';
+import 'address_selection_screen.dart';
+import 'payment_screen.dart';
+import 'orders_screen.dart';
 
-class CartScreen extends StatelessWidget {
+class CartScreen extends StatefulWidget {
   const CartScreen({super.key});
+
+  @override
+  State<CartScreen> createState() => _CartScreenState();
+}
+
+class _CartScreenState extends State<CartScreen> {
+  final AddressService _addressService = AddressService();
+  final OrderService _orderService = OrderService();
+  Address? _selectedAddress;
+  bool _isProcessing = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadDefaultAddress();
+  }
+
+  Future<void> _loadDefaultAddress() async {
+    final defaultAddress = await _addressService.getDefaultAddress();
+    if (mounted) {
+      setState(() {
+        _selectedAddress = defaultAddress;
+      });
+    }
+  }
+
+  Future<void> _proceedToCheckout() async {
+    final cartProvider = Provider.of<CartProvider>(context, listen: false);
+
+    // Check if user has an address
+    if (_selectedAddress == null) {
+      // Navigate to address selection
+      final result = await Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (_) => AddressSelectionScreen(
+            selectedAddress: _selectedAddress,
+            onAddressSelected: (address) {
+              setState(() {
+                _selectedAddress = address;
+              });
+            },
+          ),
+        ),
+      );
+      if (result == null) return;
+    }
+
+    // Create order object
+    final orderItems = cartProvider.items.map((item) => OrderItem(
+      productId: item.product.id,
+      productName: item.productName,
+      productImageUrl: item.productImageUrl,
+      price: item.productPrice,
+      quantity: item.quantity,
+    )).toList();
+
+    final order = Order(
+      id: '',
+      userId: '',
+      items: orderItems,
+      shippingAddress: _selectedAddress!,
+      totalAmount: cartProvider.totalAmount,
+      shippingCost: 99 / 83, // Convert back to USD
+      paymentMethod: 'COD',
+      paymentStatus: 'Pending',
+      orderStatus: 'Pending',
+      createdAt: DateTime.now(),
+    );
+
+    // Navigate to payment screen
+    final paymentResult = await Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (_) => PaymentScreen(order: order),
+      ),
+    );
+
+    if (paymentResult != null && paymentResult['success'] == true) {
+      // Process order
+      setState(() => _isProcessing = true);
+
+      try {
+        final createdOrder = await _orderService.createOrder(order);
+
+        if (createdOrder != null && mounted) {
+          // Clear cart
+          cartProvider.clear();
+
+          // Show success dialog
+          showDialog(
+            context: context,
+            barrierDismissible: false,
+            builder: (context) => AlertDialog(
+              backgroundColor: AppColors.mediumBlack,
+              title: const Row(
+                children: [
+                  Icon(Icons.check_circle, color: Colors.green, size: 32),
+                  SizedBox(width: 12),
+                  Text('Order Confirmed!', style: TextStyle(color: Colors.white)),
+                ],
+              ),
+              content: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Text('Your order has been placed successfully.', style: TextStyle(color: AppColors.white70)),
+                  const SizedBox(height: 16),
+                  Text('Order ID: #${createdOrder.id.substring(0, 8).toUpperCase()}', style: const TextStyle(color: AppColors.gold, fontWeight: FontWeight.bold)),
+                  const SizedBox(height: 8),
+                  Text('Estimated Delivery: ${_formatDate(DateTime.now().add(const Duration(days: 7)))}', style: const TextStyle(color: AppColors.white70)),
+                ],
+              ),
+              actions: [
+                TextButton(
+                  onPressed: () {
+                    Navigator.pop(context);
+                    Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(builder: (_) => const OrdersScreen()),
+                    );
+                  },
+                  child: const Text('View Orders', style: TextStyle(color: AppColors.gold)),
+                ),
+              ],
+            ),
+          );
+        }
+      } catch (e) {
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text('Error placing order: $e')),
+          );
+        }
+      } finally {
+        if (mounted) {
+          setState(() => _isProcessing = false);
+        }
+      }
+    }
+  }
+
+  String _formatDate(DateTime date) {
+    return '${date.day}/${date.month}/${date.year}';
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: AppColors.darkBlack,
       appBar: AppBar(
         title: const Text('Shopping Cart'),
-        backgroundColor: Theme.of(context).colorScheme.primary,
+        backgroundColor: AppColors.mediumBlack,
       ),
       body: Consumer<CartProvider>(
         builder: (context, cartProvider, child) {
@@ -22,26 +175,13 @@ class CartScreen extends StatelessWidget {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Icon(
-                    Icons.shopping_cart_outlined,
-                    size: 80,
-                    color: Colors.grey[600],
-                  ),
+                  const Icon(Icons.shopping_cart_outlined, size: 80, color: Colors.grey),
                   const SizedBox(height: 16),
-                  Text(
-                    'Your cart is empty',
-                    style: TextStyle(
-                      fontSize: 20,
-                      color: Colors.grey[400],
-                    ),
-                  ),
+                  const Text('Your cart is empty', style: TextStyle(color: Colors.white70, fontSize: 18)),
                   const SizedBox(height: 24),
                   ElevatedButton(
                     onPressed: () => Navigator.pop(context),
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Theme.of(context).colorScheme.secondary,
-                      foregroundColor: Colors.black,
-                    ),
+                    style: ElevatedButton.styleFrom(backgroundColor: AppColors.gold, foregroundColor: Colors.black),
                     child: const Text('Continue Shopping'),
                   ),
                 ],
@@ -65,63 +205,68 @@ class CartScreen extends StatelessWidget {
               Container(
                 padding: const EdgeInsets.all(16),
                 decoration: BoxDecoration(
-                  color: Theme.of(context).colorScheme.surface,
+                  color: AppColors.mediumBlack,
                   boxShadow: [
-                    BoxShadow(
-                      color: Colors.black.withOpacity(0.2),
-                      blurRadius: 10,
-                      offset: const Offset(0, -2),
-                    ),
+                    BoxShadow(color: Colors.black.withOpacity(0.2), blurRadius: 10, offset: const Offset(0, -2)),
                   ],
                 ),
                 child: Column(
                   children: [
+                    // Selected Address
+                    if (_selectedAddress != null)
+                      Card(
+                        color: AppColors.darkBlack,
+                        child: ListTile(
+                          leading: const Icon(Icons.location_on, color: AppColors.gold),
+                          title: Text(_selectedAddress!.fullName, style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
+                          subtitle: Text(_selectedAddress!.fullAddress, style: const TextStyle(color: AppColors.white70, fontSize: 12)),
+                          trailing: TextButton(
+                            onPressed: () async {
+                              final result = await Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (_) => AddressSelectionScreen(
+                                    selectedAddress: _selectedAddress,
+                                    onAddressSelected: (address) {
+                                      setState(() {
+                                        _selectedAddress = address;
+                                      });
+                                    },
+                                  ),
+                                ),
+                              );
+                              if (result != null) {
+                                setState(() {});
+                              }
+                            },
+                            child: const Text('Change', style: TextStyle(color: AppColors.gold)),
+                          ),
+                        ),
+                      ),
+                    const SizedBox(height: 12),
+
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        const Text(
-                          'Subtotal',
-                          style: TextStyle(fontSize: 16),
-                        ),
-                        Text(
-                          '₹${(cartProvider.totalAmount * 83).toStringAsFixed(0)}',
-                          style: const TextStyle(fontSize: 16),
-                        ),
+                        const Text('Subtotal', style: TextStyle(color: AppColors.white70)),
+                        Text('₹${(cartProvider.totalAmount * 83).toStringAsFixed(0)}', style: const TextStyle(color: Colors.white)),
                       ],
                     ),
                     const SizedBox(height: 8),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        const Text(
-                          'Shipping',
-                          style: TextStyle(fontSize: 16),
-                        ),
-                        Text(
-                          '₹99',
-                          style: const TextStyle(fontSize: 16),
-                        ),
+                        const Text('Shipping', style: TextStyle(color: AppColors.white70)),
+                        const Text('₹99', style: TextStyle(color: Colors.white)),
                       ],
                     ),
-                    const Divider(height: 24),
+                    const Divider(color: AppColors.lightBlack),
+                    const SizedBox(height: 8),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        const Text(
-                          'Total',
-                          style: TextStyle(
-                            fontSize: 20,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                        Text(
-                          '₹${(cartProvider.totalAmount * 83 + 99).toStringAsFixed(0)}',
-                          style: TextStyle(
-                            fontSize: 20,
-                            fontWeight: FontWeight.bold,
-                            color: Theme.of(context).colorScheme.secondary,
-                          ),
-                        ),
+                        const Text('Total', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.white)),
+                        Text('₹${(cartProvider.totalAmount * 83 + 99).toStringAsFixed(0)}', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: AppColors.gold)),
                       ],
                     ),
                     const SizedBox(height: 16),
@@ -129,28 +274,11 @@ class CartScreen extends StatelessWidget {
                       width: double.infinity,
                       height: 56,
                       child: ElevatedButton(
-                        onPressed: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => const CheckoutScreen(),
-                            ),
-                          );
-                        },
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Theme.of(context).colorScheme.secondary,
-                          foregroundColor: Colors.black,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                        ),
-                        child: const Text(
-                          'Proceed to Checkout',
-                          style: TextStyle(
-                            fontSize: 18,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
+                        onPressed: _isProcessing ? null : _proceedToCheckout,
+                        style: ElevatedButton.styleFrom(backgroundColor: AppColors.gold, foregroundColor: Colors.black),
+                        child: _isProcessing
+                            ? const CircularProgressIndicator(color: Colors.black)
+                            : const Text('Confirm Order', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
                       ),
                     ),
                   ],

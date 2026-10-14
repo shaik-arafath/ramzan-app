@@ -37,6 +37,7 @@ import 'admin_dashboard_screen.dart';
 import '../providers/auth_provider.dart';
 import 'profile_screen.dart';
 import 'sunnah_shop_screen.dart';
+import 'orders_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -1391,6 +1392,7 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
       ('Tasbeeh Counter', 'assets/icons/download.jpg', null),
       ('Islamic Calendar', null, Icons.calendar_month),
       ('Bayans', 'assets/icons/2.jpg', null),
+      ('My Orders', null, Icons.shopping_bag),
     ];
 
     final crossAxisCount = 3;
@@ -1436,6 +1438,9 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
           break;
         case 'Bayans':
           page = const BayansFeedScreen();
+          break;
+        case 'My Orders':
+          page = const OrdersScreen();
           break;
         default:
           return;
