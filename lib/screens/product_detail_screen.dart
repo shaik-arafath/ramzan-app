@@ -6,6 +6,7 @@ import '../providers/auth_provider.dart';
 import '../theme/app_colors.dart';
 import '../widgets/app_image.dart';
 import 'login_screen.dart';
+import 'cart_screen.dart';
 
 class ProductDetailScreen extends StatefulWidget {
   final Product product;
@@ -102,7 +103,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                   const SizedBox(height: 16),
                   // Price
                   Text(
-                    '\$${widget.product.price.toStringAsFixed(2)}',
+                    '₹${(widget.product.price * 83).toStringAsFixed(0)}',
                     style: TextStyle(
                       color: Theme.of(context).colorScheme.secondary,
                       fontSize: 32,
@@ -195,47 +196,102 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                     ),
                   ),
                   const SizedBox(height: 32),
-                  // Add to Cart Button
+                  // Add to Cart and Buy Now Buttons
                   Consumer2<CartProvider, AuthProvider>(
                     builder: (context, cartProvider, authProvider, child) {
-                      return SizedBox(
-                        width: double.infinity,
-                        height: 56,
-                        child: ElevatedButton(
-                          onPressed: widget.product.stock > 0
-                              ? () {
-                                  // Check if user is logged in
-                                  if (!authProvider.isAuthenticated) {
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder: (_) => LoginScreen(),
-                                      ),
-                                    );
-                                    return;
-                                  }
+                      return Row(
+                        children: [
+                          // Add to Cart Button
+                          Expanded(
+                            child: SizedBox(
+                              height: 56,
+                              child: ElevatedButton(
+                                onPressed: widget.product.stock > 0
+                                    ? () {
+                                        // Check if user is logged in
+                                        if (!authProvider.isAuthenticated) {
+                                          Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                              builder: (_) => LoginScreen(),
+                                            ),
+                                          );
+                                          return;
+                                        }
 
-                                  // Add to cart
-                                  cartProvider.addItem(widget.product);
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                    SnackBar(
-                                      content: Text('${widget.product.name} added to cart'),
-                                      duration: const Duration(seconds: 1),
-                                      backgroundColor: AppColors.mediumBlack,
-                                    ),
-                                  );
-                                }
-                              : null,
-                          child: Text(
-                            widget.product.stock > 0
-                                ? 'Add to Cart - \$${widget.product.price.toStringAsFixed(2)}'
-                                : 'Out of Stock',
-                            style: const TextStyle(
-                              fontSize: 18,
-                              fontWeight: FontWeight.bold,
+                                        // Add to cart
+                                        cartProvider.addItem(widget.product);
+                                        ScaffoldMessenger.of(context).showSnackBar(
+                                          SnackBar(
+                                            content: Text('${widget.product.name} added to cart'),
+                                            duration: const Duration(seconds: 1),
+                                            backgroundColor: AppColors.mediumBlack,
+                                          ),
+                                        );
+                                      }
+                                    : null,
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: AppColors.gold,
+                                ),
+                                child: Text(
+                                  widget.product.stock > 0
+                                      ? 'Add to Cart'
+                                      : 'Out of Stock',
+                                  style: const TextStyle(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.black,
+                                  ),
+                                ),
+                              ),
                             ),
                           ),
-                        ),
+                          const SizedBox(width: 12),
+                          // Buy Now Button
+                          Expanded(
+                            child: SizedBox(
+                              height: 56,
+                              child: ElevatedButton(
+                                onPressed: widget.product.stock > 0
+                                    ? () {
+                                        // Check if user is logged in
+                                        if (!authProvider.isAuthenticated) {
+                                          Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                              builder: (_) => LoginScreen(),
+                                            ),
+                                          );
+                                          return;
+                                        }
+
+                                        // Add to cart and navigate to cart
+                                        cartProvider.addItem(widget.product);
+                                        Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                            builder: (_) => const CartScreen(),
+                                          ),
+                                        );
+                                      }
+                                    : null,
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: Colors.green,
+                                ),
+                                child: Text(
+                                  widget.product.stock > 0
+                                      ? 'Buy Now'
+                                      : 'Out of Stock',
+                                  style: const TextStyle(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.white,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
                       );
                     },
                   ),

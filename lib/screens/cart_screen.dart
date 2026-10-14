@@ -84,7 +84,7 @@ class CartScreen extends StatelessWidget {
                           style: TextStyle(fontSize: 16),
                         ),
                         Text(
-                          '\$${cartProvider.totalAmount.toStringAsFixed(2)}',
+                          '₹${(cartProvider.totalAmount * 83).toStringAsFixed(0)}',
                           style: const TextStyle(fontSize: 16),
                         ),
                       ],
@@ -98,7 +98,7 @@ class CartScreen extends StatelessWidget {
                           style: TextStyle(fontSize: 16),
                         ),
                         Text(
-                          '\$5.99',
+                          '₹99',
                           style: const TextStyle(fontSize: 16),
                         ),
                       ],
@@ -115,7 +115,7 @@ class CartScreen extends StatelessWidget {
                           ),
                         ),
                         Text(
-                          '\$${(cartProvider.totalAmount + 5.99).toStringAsFixed(2)}',
+                          '₹${(cartProvider.totalAmount * 83 + 99).toStringAsFixed(0)}',
                           style: TextStyle(
                             fontSize: 20,
                             fontWeight: FontWeight.bold,
@@ -203,7 +203,7 @@ class CartScreen extends StatelessWidget {
                   ),
                   const SizedBox(height: 4),
                   Text(
-                    '\$${cartItem.productPrice.toStringAsFixed(2)}',
+                    '₹${(cartItem.productPrice * 83).toStringAsFixed(0)}',
                     style: TextStyle(
                       color: Theme.of(context).colorScheme.secondary,
                       fontWeight: FontWeight.bold,

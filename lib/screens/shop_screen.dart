@@ -460,7 +460,7 @@ class _ShopScreenState extends State<ShopScreen> {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text(
-                          '\$${product.price.toStringAsFixed(2)}',
+                          '₹${(product.price * 83).toStringAsFixed(0)}',
                           style: const TextStyle(
                             color: AppColors.gold,
                             fontWeight: FontWeight.bold,
