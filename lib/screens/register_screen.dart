@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
 import '../services/auth_service.dart';
 import '../providers/auth_provider.dart';
 import 'main_navigation_screen.dart';
@@ -38,7 +37,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
     try {
       print('Attempting registration with email: ${_emailController.text.trim()}');
-      final authService = Provider.of<AuthService>(context, listen: false);
+      final authService = AuthService();
       final authProvider = Provider.of<AuthProvider>(context, listen: false);
       final response = await authService.signUp(
         email: _emailController.text.trim(),
