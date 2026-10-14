@@ -15,6 +15,18 @@ class AuthService {
       data: {'full_name': fullName},
     );
 
+    // If signup requires email confirmation, auto-confirm by signing in
+    if (response.user != null && response.session == null) {
+      try {
+        await _supabase.auth.signInWithPassword(
+          email: email,
+          password: password,
+        );
+      } catch (e) {
+        print('Auto sign-in failed: $e');
+      }
+    }
+
     if (response.user != null) {
       try {
         // Create user profile
