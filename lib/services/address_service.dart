@@ -28,7 +28,7 @@ class AddressService {
     try {
       final response = await _client
           .from('addresses')
-          .insert(address.toMap())
+          .insert(address.toMap(includeId: false))
           .select()
           .single();
 
@@ -43,7 +43,7 @@ class AddressService {
     try {
       await _client
           .from('addresses')
-          .update(address.toMap())
+          .update(address.toMap(includeId: true))
           .eq('id', address.id);
       return true;
     } catch (e) {
