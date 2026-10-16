@@ -43,6 +43,7 @@ dependencies:
 
   # Location (for Qibla Finder)
   geolocator: ^13.0.1
+  geocoding: ^3.0.0
 
   # Compass (for live Qibla direction)
   flutter_compass: ^0.8.0

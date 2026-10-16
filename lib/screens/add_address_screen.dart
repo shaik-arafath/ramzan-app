@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:geocoding/geocoding.dart';
 import 'package:provider/provider.dart';
 import '../models/address.dart';
 import '../services/address_service.dart';
@@ -94,6 +95,26 @@ class _AddAddressScreenState extends State<AddAddressScreen> {
       _longitude = position.longitude;
     });
 
+    // Reverse geocode to get address details
+    try {
+      List<Placemark> placemarks = await placemarkFromCoordinates(
+        position.latitude,
+        position.longitude,
+      );
+
+      if (placemarks.isNotEmpty) {
+        Placemark place = placemarks[0];
+        setState(() {
+          _cityController.text = place.locality ?? place.subAdministrativeArea ?? '';
+          _stateController.text = place.administrativeArea ?? '';
+          _pincodeController.text = place.postalCode ?? '';
+          _addressLine1Controller.text = place.street ?? '';
+        });
+      }
+    } catch (e) {
+      print('Error reverse geocoding: $e');
+    }
+
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(content: Text('Location captured successfully!')),
     );
@@ -112,6 +133,7 @@ class _AddAddressScreenState extends State<AddAddressScreen> {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('User not logged in')),
         );
+        setState(() => _isLoading = false);
         return;
       }
 
@@ -131,12 +153,16 @@ class _AddAddressScreenState extends State<AddAddressScreen> {
         createdAt: widget.existingAddress?.createdAt ?? DateTime.now(),
       );
 
+      print('Saving address: ${address.toMap()}');
+
       bool success;
       if (widget.existingAddress != null) {
         success = await _addressService.updateAddress(address);
+        print('Update result: $success');
       } else {
         final result = await _addressService.addAddress(address);
         success = result != null;
+        print('Add result: $success, address: $result');
       }
 
       if (success && mounted) {
@@ -149,11 +175,22 @@ class _AddAddressScreenState extends State<AddAddressScreen> {
             backgroundColor: Colors.green,
           ),
         );
+      } else if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Failed to save address'),
+            backgroundColor: Colors.red,
+          ),
+        );
       }
     } catch (e) {
+      print('Error saving address: $e');
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Error saving address: $e')),
+          SnackBar(
+            content: Text('Error saving address: $e'),
+            backgroundColor: Colors.red,
+          ),
         );
       }
     } finally {
