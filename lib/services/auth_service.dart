@@ -9,29 +9,35 @@ class AuthService {
     required String password,
     required String fullName,
   }) async {
+    // Try to sign up
     final response = await _supabase.auth.signUp(
       email: email,
       password: password,
       data: {'full_name': fullName},
     );
 
-    // If signup requires email confirmation, auto-confirm by signing in
+    AuthResponse finalResponse = response;
+
+    // If signup requires email confirmation (session is null), auto-confirm by signing in
     if (response.user != null && response.session == null) {
       try {
-        await _supabase.auth.signInWithPassword(
+        final signInResponse = await _supabase.auth.signInWithPassword(
           email: email,
           password: password,
         );
+        // Use the sign-in response which has the session
+        finalResponse = signInResponse;
       } catch (e) {
         print('Auto sign-in failed: $e');
+        rethrow;
       }
     }
 
-    if (response.user != null) {
+    if (finalResponse.user != null) {
       try {
         // Create user profile
         await _supabase.from('user_profiles').insert({
-          'user_id': response.user!.id,
+          'user_id': finalResponse.user!.id,
           'full_name': fullName,
           'email': email,
           'role': 'user',
@@ -42,7 +48,7 @@ class AuthService {
       }
     }
 
-    return response;
+    return finalResponse;
   }
 
   // Sign in with email and password

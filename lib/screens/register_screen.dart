@@ -67,19 +67,19 @@ class _RegisterScreenState extends State<RegisterScreen> {
       if (mounted) {
         String errorMessage = 'Registration failed';
         final errorStr = e.toString();
-        
+
         print('Error string: $errorStr');
-        
+
         if (errorStr.contains('User already registered') || errorStr.contains('already_registered')) {
           errorMessage = 'This email is already registered';
         } else if (errorStr.contains('weak password') || errorStr.contains('password')) {
           errorMessage = 'Password is too weak. Use at least 6 characters.';
-        } else if (errorStr.contains('invalid email') || errorStr.contains('email')) {
+        } else if (errorStr.contains('invalid email') || errorStr.contains('Invalid email')) {
           errorMessage = 'Invalid email address';
         } else {
           errorMessage = 'Registration failed: $errorStr';
         }
-        
+
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text(errorMessage),
