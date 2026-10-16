@@ -893,36 +893,13 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
         ),
         child: Stack(
           children: [
-            // Halal World text logo
+            // Logo image
             Align(
               alignment: Alignment.center,
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text(
-                    'Halal World',
-                    style: TextStyle(
-                      fontSize: 42,
-                      fontWeight: FontWeight.bold,
-                      color: AppColors.gold,
-                      shadows: [
-                        Shadow(
-                          color: AppColors.gold.withOpacity(0.5),
-                          blurRadius: 20,
-                        ),
-                      ],
-                    ),
-                  ),
-                  const SizedBox(height: 8),
-                  Text(
-                    'Islamic Shopping App',
-                    style: TextStyle(
-                      fontSize: 16,
-                      color: AppColors.silver,
-                      letterSpacing: 2,
-                    ),
-                  ),
-                ],
+              child: Image.asset(
+                'assets/Picsart_26-10-11_23-49-02-904.jpg',
+                fit: BoxFit.contain,
+                height: 120,
               ),
             ),
             // Top-right notification, shop, cart & settings icons inside header
