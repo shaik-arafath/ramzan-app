@@ -38,29 +38,40 @@ class _RegisterScreenState extends State<RegisterScreen> {
     try {
       print('Attempting registration with email: ${_emailController.text.trim()}');
       final authService = AuthService();
-      final authProvider = Provider.of<AuthProvider>(context, listen: false);
       final response = await authService.signUp(
         email: _emailController.text.trim(),
         password: _passwordController.text,
         fullName: _nameController.text.trim(),
       );
 
-      print('Registration response: ${response.user?.email}');
+      print('Registration response: ${response.user?.email}, session: ${response.session}');
 
       if (mounted) {
-        // Reload auth provider to update user state
-        await authProvider.reloadProfile();
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Registration successful! Welcome to Halal World!'),
-            backgroundColor: Color(0xFFE8B931),
-            duration: Duration(seconds: 3),
-          ),
-        );
-        // Navigate to main screen
-        Navigator.of(context).pushReplacement(
-          MaterialPageRoute(builder: (_) => const MainNavigationScreen()),
-        );
+        if (response.session != null) {
+          // Email confirmation is disabled, user is already signed in
+          final authProvider = Provider.of<AuthProvider>(context, listen: false);
+          await authProvider.reloadProfile();
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('Registration successful! Welcome to Halal World!'),
+              backgroundColor: Color(0xFFE8B931),
+              duration: Duration(seconds: 3),
+            ),
+          );
+          Navigator.of(context).pushReplacement(
+            MaterialPageRoute(builder: (_) => const MainNavigationScreen()),
+          );
+        } else {
+          // Email confirmation is required
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('Registration successful! Please check your email to confirm, then sign in.'),
+              backgroundColor: Color(0xFFE8B931),
+              duration: Duration(seconds: 5),
+            ),
+          );
+          Navigator.of(context).pop(); // Go back to login screen
+        }
       }
     } catch (e) {
       print('Registration error: $e');

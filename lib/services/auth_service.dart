@@ -16,28 +16,11 @@ class AuthService {
       data: {'full_name': fullName},
     );
 
-    AuthResponse finalResponse = response;
-
-    // If signup requires email confirmation (session is null), auto-confirm by signing in
-    if (response.user != null && response.session == null) {
-      try {
-        final signInResponse = await _supabase.auth.signInWithPassword(
-          email: email,
-          password: password,
-        );
-        // Use the sign-in response which has the session
-        finalResponse = signInResponse;
-      } catch (e) {
-        print('Auto sign-in failed: $e');
-        rethrow;
-      }
-    }
-
-    if (finalResponse.user != null) {
+    if (response.user != null) {
       try {
         // Create user profile
         await _supabase.from('user_profiles').insert({
-          'user_id': finalResponse.user!.id,
+          'user_id': response.user!.id,
           'full_name': fullName,
           'email': email,
           'role': 'user',
@@ -48,7 +31,7 @@ class AuthService {
       }
     }
 
-    return finalResponse;
+    return response;
   }
 
   // Sign in with email and password
