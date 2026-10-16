@@ -893,13 +893,11 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
         ),
         child: Stack(
           children: [
-            // Logo image
-            Align(
-              alignment: Alignment.center,
+            // Logo image - fit to all edges
+            Positioned.fill(
               child: Image.asset(
                 'assets/Picsart_26-10-11_23-49-02-904.jpg',
-                fit: BoxFit.contain,
-                height: 120,
+                fit: BoxFit.cover,
               ),
             ),
             // Top-right notification, shop, cart & settings icons inside header

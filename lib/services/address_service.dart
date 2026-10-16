@@ -26,15 +26,18 @@ class AddressService {
 
   Future<Address?> addAddress(Address address) async {
     try {
+      print('Inserting address data: ${address.toMap(includeId: false)}');
       final response = await _client
           .from('addresses')
           .insert(address.toMap(includeId: false))
           .select()
           .single();
 
+      print('Address inserted successfully: $response');
       return Address.fromMap(response as Map<String, dynamic>);
     } catch (e) {
       print('Error adding address: $e');
+      print('Error type: ${e.runtimeType}');
       return null;
     }
   }

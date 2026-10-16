@@ -27,9 +27,8 @@ class _SplashScreenState extends State<SplashScreen> {
     return Scaffold(
       backgroundColor: Colors.black,
       body: Center(
-        child: SizedBox(
-          width: double.infinity,
-          height: double.infinity,
+        child: Padding(
+          padding: const EdgeInsets.all(40),
           child: Image.asset(
             'assets/app_icon.png',
             fit: BoxFit.contain,
