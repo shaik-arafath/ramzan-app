@@ -8,6 +8,7 @@ import '../models/order.dart';
 import '../widgets/app_image.dart';
 import '../services/address_service.dart';
 import '../services/order_service.dart';
+import '../services/notification_service.dart';
 import '../theme/app_colors.dart';
 import 'address_selection_screen.dart';
 import 'upi_payment_screen.dart';
@@ -23,6 +24,7 @@ class CartScreen extends StatefulWidget {
 class _CartScreenState extends State<CartScreen> {
   final AddressService _addressService = AddressService();
   final OrderService _orderService = OrderService();
+  final NotificationService _notificationService = NotificationService();
   Address? _selectedAddress;
   bool _isProcessing = false;
 
@@ -113,6 +115,13 @@ class _CartScreenState extends State<CartScreen> {
       final createdOrder = await _orderService.createOrder(order);
 
       if (createdOrder != null && mounted) {
+        // Notify admin of new order
+        await _notificationService.notifyAdminOfNewOrder(
+          orderId: createdOrder.id,
+          customerName: _selectedAddress!.fullName,
+          amount: cartProvider.totalAmount,
+        );
+
         // Navigate to UPI payment screen with actual order ID
         await Navigator.push(
           context,

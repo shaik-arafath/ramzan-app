@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import '../services/notification_service.dart';
 
 class AdminOrdersScreen extends StatefulWidget {
   const AdminOrdersScreen({super.key});
@@ -10,6 +11,7 @@ class AdminOrdersScreen extends StatefulWidget {
 
 class _AdminOrdersScreenState extends State<AdminOrdersScreen> {
   final SupabaseClient _supabase = Supabase.instance.client;
+  final NotificationService _notificationService = NotificationService();
   List<Map<String, dynamic>> _orders = [];
   bool _isLoading = true;
 
@@ -59,6 +61,7 @@ class _AdminOrdersScreenState extends State<AdminOrdersScreen> {
   Future<void> _confirmPayment(String orderId) async {
     try {
       await _supabase.from('orders').update({'payment_status': 'Confirmed'}).eq('id', orderId);
+      await _notificationService.notifyPaymentConfirmed(orderId: orderId);
       await _loadOrders();
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -99,6 +102,7 @@ class _AdminOrdersScreenState extends State<AdminOrdersScreen> {
         'current_location': location,
         'estimated_delivery_date': deliveryDate?.toIso8601String(),
       }).eq('id', orderId);
+      await _notificationService.notifyOrderStatusUpdate(orderId: orderId, status: trackingStatus);
       await _loadOrders();
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
