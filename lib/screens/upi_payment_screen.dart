@@ -112,23 +112,17 @@ class _UpipaymentScreenState extends State<UpipaymentScreen> {
             const SizedBox(height: 16),
             Container(
               width: double.infinity,
-              height: 200,
+              height: 250,
               decoration: BoxDecoration(
                 color: AppColors.mediumBlack,
                 borderRadius: BorderRadius.circular(12),
                 border: Border.all(color: AppColors.lightBlack),
               ),
-              child: const Center(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Icon(Icons.qr_code_scanner, size: 64, color: AppColors.gold),
-                    SizedBox(height: 8),
-                    Text(
-                      'QR Code Scanner',
-                      style: TextStyle(color: AppColors.white70),
-                    ),
-                  ],
+              child: Padding(
+                padding: const EdgeInsets.all(16),
+                child: Image.asset(
+                  'assets/AccountQRCodeState Bank of India - 9292_DARK_THEME.png',
+                  fit: BoxFit.contain,
                 ),
               ),
             ),

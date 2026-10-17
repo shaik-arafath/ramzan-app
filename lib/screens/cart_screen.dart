@@ -50,17 +50,16 @@ class _CartScreenState extends State<CartScreen> {
       final result = await Navigator.push(
         context,
         MaterialPageRoute(
-          builder: (_) => AddressSelectionScreen(
-            selectedAddress: _selectedAddress,
-            onAddressSelected: (address) {
-              setState(() {
-                _selectedAddress = address;
-              });
-            },
-          ),
+          builder: (_) => const AddressSelectionScreen(),
         ),
       );
-      if (result == null) return;
+      if (result != null && result is Address) {
+        setState(() {
+          _selectedAddress = result;
+        });
+      } else {
+        return;
+      }
     }
 
     // Create order object
@@ -198,18 +197,13 @@ class _CartScreenState extends State<CartScreen> {
                               final result = await Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                  builder: (_) => AddressSelectionScreen(
-                                    selectedAddress: _selectedAddress,
-                                    onAddressSelected: (address) {
-                                      setState(() {
-                                        _selectedAddress = address;
-                                      });
-                                    },
-                                  ),
+                                  builder: (_) => const AddressSelectionScreen(),
                                 ),
                               );
-                              if (result != null) {
-                                setState(() {});
+                              if (result != null && result is Address) {
+                                setState(() {
+                                  _selectedAddress = result;
+                                });
                               }
                             },
                             child: const Text('Change', style: TextStyle(color: AppColors.gold)),

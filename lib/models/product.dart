@@ -64,7 +64,18 @@ class Product {
 
   }
 
-
+  factory Product.fromMap(Map<String, dynamic> map) {
+    return Product(
+      id: map['id'] as String? ?? '',
+      name: map['name'] as String? ?? '',
+      description: map['description'] as String? ?? '',
+      price: (map['price'] as num?)?.toDouble() ?? 0,
+      imageUrl: map['image_url'] as String? ?? map['imageUrl'] as String? ?? '',
+      category: map['category'] as String? ?? '',
+      stock: map['stock'] as int? ?? 10,
+      rating: (map['rating'] as num?)?.toDouble() ?? 4.5,
+    );
+  }
 
   Map<String, dynamic> toJson() {
 
@@ -88,6 +99,19 @@ class Product {
 
     };
 
+  }
+
+  Map<String, dynamic> toMap() {
+    return {
+      'id': id,
+      'name': name,
+      'description': description,
+      'price': price,
+      'image_url': imageUrl,
+      'category': category,
+      'stock': stock,
+      'rating': rating,
+    };
   }
 
 }
