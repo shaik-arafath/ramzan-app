@@ -1788,22 +1788,38 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
 
           children: [
 
-            // Logo image
-
-            Align(
-
-              alignment: Alignment.center,
-
-              child: Image.asset(
-
-                'assets/Picsart_26-10-17_20-21-38-863.png',
-
-                fit: BoxFit.contain,
-
-                height: 120,
-
+            // Logo and title
+            Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    'HALAL WORLD',
+                    style: TextStyle(
+                      fontSize: 32,
+                      fontWeight: FontWeight.bold,
+                      color: AppColors.gold,
+                      letterSpacing: 3,
+                      shadows: [
+                        Shadow(
+                          color: AppColors.gold.withOpacity(0.5),
+                          blurRadius: 10,
+                          offset: const Offset(0, 2),
+                        ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  Text(
+                    'Islamic Shopping App',
+                    style: TextStyle(
+                      fontSize: 14,
+                      color: Colors.white.withOpacity(0.8),
+                      letterSpacing: 2,
+                    ),
+                  ),
+                ],
               ),
-
             ),
 
             // Top-right notification, shop, cart & settings icons inside header

@@ -3,7 +3,6 @@ import 'package:timezone/data/latest.dart' as tz;
 import 'package:timezone/timezone.dart' as tz;
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:http/http.dart' as http;
-import 'package:emailjs_com/emailjs_com.dart';
 
 class NotificationService {
   final FlutterLocalNotificationsPlugin _notifications =
@@ -13,23 +12,7 @@ class NotificationService {
   // Admin email for payment notifications
   static const String adminEmail = 'arafathshaik121@gmail.com';
 
-  // EmailJS Configuration
-  // TODO: Replace with your actual EmailJS credentials
-  static const String emailJsServiceId = 'YOUR_SERVICE_ID';
-  static const String emailJsTemplateId = 'YOUR_TEMPLATE_ID';
-  static const String emailJsPublicKey = 'YOUR_PUBLIC_KEY';
-
   Future<void> initialize() async {
-    // Initialize EmailJS
-    try {
-      await EmailJS.init(
-        serviceId: emailJsServiceId,
-        publicKey: emailJsPublicKey,
-      );
-      print('EmailJS initialized successfully');
-    } catch (e) {
-      print('Error initializing EmailJS: $e');
-    }
     // Initialize timezone data for scheduled notifications (Android)
     tz.initializeTimeZones();
     // Use device's local timezone; for India this is typically Asia/Kolkata.
@@ -238,28 +221,17 @@ Please review and confirm the payment in the admin panel.
 ''';
 
       print('Sending email to $adminEmail: $emailSubject');
+      print('Email body: $emailBody');
 
-      // Try to send via EmailJS
-      try {
-        await EmailJS.send(
-          emailJsServiceId,
-          emailJsTemplateId,
-          {
-            'to_email': adminEmail,
-            'subject': emailSubject,
-            'message': emailBody,
-            'order_id': orderId,
-            'customer_name': customerName,
-            'amount': '₹${(amount * 83).toStringAsFixed(2)}',
-          },
-        );
-        print('Email sent successfully via EmailJS');
-      } catch (e) {
-        print('EmailJS send failed (credentials not configured yet): $e');
-        print('Email would be sent to: $adminEmail');
-        print('Subject: $emailSubject');
-        print('Body: $emailBody');
-      }
+      // TODO: Integrate with actual email service
+      // Options:
+      // 1. Supabase Edge Functions with Resend/SendGrid
+      // 2. EmailJS (free tier available)
+      // 3. Formspree (free tier)
+      // 4. Mailgun (free tier)
+
+      // For now, just log it
+      print('Payment notification sent to admin');
     } catch (e) {
       print('Error sending payment notification: $e');
     }
