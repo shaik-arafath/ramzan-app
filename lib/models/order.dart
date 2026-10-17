@@ -12,6 +12,10 @@ class Order {
   final String orderStatus;
   final DateTime createdAt;
   final DateTime? estimatedDelivery;
+  final String? paymentScreenshot;
+  final String? trackingStatus; // packed, out_for_delivery, delivered
+  final String? currentLocation;
+  final DateTime? estimatedDeliveryDate;
 
   Order({
     required this.id,
@@ -20,11 +24,15 @@ class Order {
     required this.shippingAddress,
     required this.totalAmount,
     required this.shippingCost,
-    required this.paymentMethod,
-    required this.paymentStatus,
-    required this.orderStatus,
+    this.paymentMethod = 'UPI',
+    this.paymentStatus = 'Pending',
+    this.orderStatus = 'Pending',
     required this.createdAt,
     this.estimatedDelivery,
+    this.paymentScreenshot,
+    this.trackingStatus,
+    this.currentLocation,
+    this.estimatedDeliveryDate,
   });
 
   factory Order.fromMap(Map<String, dynamic> map) {
@@ -39,12 +47,18 @@ class Order {
       shippingAddress: Address.fromMap(map['shipping_address'] as Map<String, dynamic>),
       totalAmount: (map['total_amount'] as num?)?.toDouble() ?? 0,
       shippingCost: (map['shipping_cost'] as num?)?.toDouble() ?? 0,
-      paymentMethod: map['payment_method'] as String? ?? 'COD',
+      paymentMethod: map['payment_method'] as String? ?? 'UPI',
       paymentStatus: map['payment_status'] as String? ?? 'Pending',
       orderStatus: map['order_status'] as String? ?? 'Pending',
       createdAt: DateTime.tryParse(map['created_at'] as String? ?? '') ?? DateTime.now(),
       estimatedDelivery: map['estimated_delivery'] != null
           ? DateTime.tryParse(map['estimated_delivery'] as String)
+          : null,
+      paymentScreenshot: map['payment_screenshot'] as String?,
+      trackingStatus: map['tracking_status'] as String?,
+      currentLocation: map['current_location'] as String?,
+      estimatedDeliveryDate: map['estimated_delivery_date'] != null
+          ? DateTime.tryParse(map['estimated_delivery_date'] as String)
           : null,
     );
   }
@@ -62,6 +76,10 @@ class Order {
       'order_status': orderStatus,
       'created_at': createdAt.toIso8601String(),
       'estimated_delivery': estimatedDelivery?.toIso8601String(),
+      'payment_screenshot': paymentScreenshot,
+      'tracking_status': trackingStatus,
+      'current_location': currentLocation,
+      'estimated_delivery_date': estimatedDeliveryDate?.toIso8601String(),
     };
   }
 

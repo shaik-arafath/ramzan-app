@@ -47,8 +47,9 @@ class Address {
     );
   }
 
-  Map<String, dynamic> toMap({bool includeId = true}) {
-    final map = {
+  Map<String, dynamic> toMap() {
+    return {
+      'id': id,
       'user_id': userId,
       'full_name': fullName,
       'phone': phone,
@@ -62,12 +63,6 @@ class Address {
       'is_default': isDefault,
       'created_at': createdAt.toIso8601String(),
     };
-
-    if (includeId && id.isNotEmpty) {
-      map['id'] = id;
-    }
-
-    return map;
   }
 
   String get fullAddress {

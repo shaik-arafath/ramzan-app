@@ -9,7 +9,8 @@ import '../services/address_service.dart';
 import '../services/order_service.dart';
 import '../theme/app_colors.dart';
 import 'address_selection_screen.dart';
-import 'payment_screen.dart';
+import 'upi_payment_screen.dart';
+import 'payment_processing_screen.dart';
 import 'orders_screen.dart';
 
 class CartScreen extends StatefulWidget {
@@ -78,80 +79,52 @@ class _CartScreenState extends State<CartScreen> {
       shippingAddress: _selectedAddress!,
       totalAmount: cartProvider.totalAmount,
       shippingCost: 99 / 83, // Convert back to USD
-      paymentMethod: 'COD',
+      paymentMethod: 'UPI',
       paymentStatus: 'Pending',
       orderStatus: 'Pending',
       createdAt: DateTime.now(),
     );
 
-    // Navigate to payment screen
-    final paymentResult = await Navigator.push(
+    // Navigate to UPI payment screen
+    await Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (_) => PaymentScreen(order: order),
+        builder: (_) => UpipaymentScreen(
+          totalAmount: cartProvider.totalAmount,
+          orderId: 'temp', // Will be replaced after order creation
+        ),
       ),
     );
 
-    if (paymentResult != null && paymentResult['success'] == true) {
-      // Process order
-      setState(() => _isProcessing = true);
+    // After payment screenshot upload, create order
+    setState(() => _isProcessing = true);
 
-      try {
-        final createdOrder = await _orderService.createOrder(order);
+    try {
+      final createdOrder = await _orderService.createOrder(order);
 
-        if (createdOrder != null && mounted) {
-          // Clear cart
-          cartProvider.clear();
+      if (createdOrder != null && mounted) {
+        // Clear cart
+        cartProvider.clear();
 
-          // Show success dialog
-          showDialog(
-            context: context,
-            barrierDismissible: false,
-            builder: (context) => AlertDialog(
-              backgroundColor: AppColors.mediumBlack,
-              title: const Row(
-                children: [
-                  Icon(Icons.check_circle, color: Colors.green, size: 32),
-                  SizedBox(width: 12),
-                  Text('Order Confirmed!', style: TextStyle(color: Colors.white)),
-                ],
-              ),
-              content: Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const Text('Your order has been placed successfully.', style: TextStyle(color: AppColors.white70)),
-                  const SizedBox(height: 16),
-                  Text('Order ID: #${createdOrder.id.substring(0, 8).toUpperCase()}', style: const TextStyle(color: AppColors.gold, fontWeight: FontWeight.bold)),
-                  const SizedBox(height: 8),
-                  Text('Estimated Delivery: ${_formatDate(DateTime.now().add(const Duration(days: 7)))}', style: const TextStyle(color: AppColors.white70)),
-                ],
-              ),
-              actions: [
-                TextButton(
-                  onPressed: () {
-                    Navigator.pop(context);
-                    Navigator.pushReplacement(
-                      context,
-                      MaterialPageRoute(builder: (_) => const OrdersScreen()),
-                    );
-                  },
-                  child: const Text('View Orders', style: TextStyle(color: AppColors.gold)),
-                ),
-              ],
+        // Navigate to payment processing screen
+        Navigator.of(context).pushReplacement(
+          MaterialPageRoute(
+            builder: (_) => PaymentProcessingScreen(
+              orderId: createdOrder.id,
+              totalAmount: cartProvider.totalAmount,
             ),
-          );
-        }
-      } catch (e) {
-        if (mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('Error placing order: $e')),
-          );
-        }
-      } finally {
-        if (mounted) {
-          setState(() => _isProcessing = false);
-        }
+          ),
+        );
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Error placing order: $e')),
+        );
+      }
+    } finally {
+      if (mounted) {
+        setState(() => _isProcessing = false);
       }
     }
   }
