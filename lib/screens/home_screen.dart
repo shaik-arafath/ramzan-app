@@ -1796,7 +1796,7 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
 
               child: Image.asset(
 
-                'assets/Picsart_26-10-11_23-49-02-904.jpg',
+                'assets/Picsart_26-10-17_20-21-38-863.png',
 
                 fit: BoxFit.contain,
 
