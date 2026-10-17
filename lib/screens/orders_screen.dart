@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 import '../models/order.dart';
 import '../services/order_service.dart';
 import '../theme/app_colors.dart';
@@ -18,7 +19,7 @@ class _OrdersScreenState extends State<OrdersScreen> {
   @override
   void initState() {
     super.initState();
-    _ordersFuture = _orderService.fetchOrders();
+    _refreshOrders();
   }
 
   Future<void> _refreshOrders() async {

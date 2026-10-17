@@ -33,8 +33,12 @@ class _CartScreenState extends State<CartScreen> {
   }
 
   Future<void> _checkAuthAndLoadAddress() async {
+    // Refresh session to ensure we have the latest auth state
+    await Supabase.instance.client.auth.refreshSession();
+    
     final userId = Supabase.instance.client.auth.currentUser?.id;
     print('Cart screen - Current user ID: $userId');
+    print('Cart screen - Current user: ${Supabase.instance.client.auth.currentUser}');
     if (userId != null && userId.isNotEmpty) {
       await _loadDefaultAddress();
     }
