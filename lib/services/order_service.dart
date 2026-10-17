@@ -25,11 +25,14 @@ class OrderService {
 
   Future<Order?> createOrder(Order order) async {
     try {
+      print('Creating order with data: ${order.toMap(includeId: false)}');
       final response = await _client
           .from('orders')
-          .insert(order.toMap())
+          .insert(order.toMap(includeId: false))
           .select()
           .single();
+
+      print('Order created successfully: $response');
 
       // Calculate estimated delivery (5-7 business days)
       final estimatedDelivery = DateTime.now().add(const Duration(days: 7));
@@ -41,6 +44,7 @@ class OrderService {
       return Order.fromMap(response as Map<String, dynamic>);
     } catch (e) {
       print('Error creating order: $e');
+      print('Error type: ${e.runtimeType}');
       return null;
     }
   }

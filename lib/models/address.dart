@@ -60,7 +60,6 @@ class Address {
       'latitude': latitude,
       'longitude': longitude,
       'is_default': isDefault,
-      'created_at': createdAt.toIso8601String(),
     };
 
     if (includeId && id.isNotEmpty) {

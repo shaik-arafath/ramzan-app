@@ -63,9 +63,8 @@ class Order {
     );
   }
 
-  Map<String, dynamic> toMap() {
-    return {
-      'id': id,
+  Map<String, dynamic> toMap({bool includeId = true}) {
+    final map = {
       'user_id': userId,
       'items': items.map((item) => item.toMap()).toList(),
       'shipping_address': shippingAddress.toMap(),
@@ -74,13 +73,18 @@ class Order {
       'payment_method': paymentMethod,
       'payment_status': paymentStatus,
       'order_status': orderStatus,
-      'created_at': createdAt.toIso8601String(),
       'estimated_delivery': estimatedDelivery?.toIso8601String(),
       'payment_screenshot': paymentScreenshot,
       'tracking_status': trackingStatus,
       'current_location': currentLocation,
       'estimated_delivery_date': estimatedDeliveryDate?.toIso8601String(),
     };
+
+    if (includeId && id.isNotEmpty) {
+      map['id'] = id;
+    }
+
+    return map;
   }
 
   double get grandTotal => totalAmount + shippingCost;
