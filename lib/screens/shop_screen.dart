@@ -416,46 +416,41 @@ class _ShopScreenState extends State<ShopScreen> {
                 padding: const EdgeInsets.all(12),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
+                    Text(
+                      product.name,
+                      style: const TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 14,
+                        color: Colors.white,
+                      ),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                    const SizedBox(height: 4),
+                    Row(
                       children: [
-                        Text(
-                          product.name,
-                          style: const TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 14,
-                            color: Colors.white,
-                          ),
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
+                        const Icon(
+                          Icons.star,
+                          size: 12,
+                          color: Color(0xFFE8B931),
                         ),
-                        const SizedBox(height: 4),
-                        Row(
-                          children: [
-                            const Icon(
-                              Icons.star,
-                              size: 12,
-                              color: Color(0xFFE8B931),
-                            ),
-                            const SizedBox(width: 4),
-                            Text(
-                              product.rating.toString(),
-                              style: const TextStyle(fontSize: 12, color: Colors.white70),
-                            ),
-                            const SizedBox(width: 8),
-                            Text(
-                              '(${product.stock} in stock)',
-                              style: TextStyle(
-                                fontSize: 10,
-                                color: Colors.grey[400],
-                              ),
-                            ),
-                          ],
+                        const SizedBox(width: 4),
+                        Text(
+                          product.rating.toString(),
+                          style: const TextStyle(fontSize: 12, color: Colors.white70),
+                        ),
+                        const SizedBox(width: 8),
+                        Text(
+                          '(${product.stock} in stock)',
+                          style: TextStyle(
+                            fontSize: 10,
+                            color: Colors.grey[400],
+                          ),
                         ),
                       ],
                     ),
+                    const SizedBox(height: 8),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [

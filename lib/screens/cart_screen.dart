@@ -84,47 +84,44 @@ class _CartScreenState extends State<CartScreen> {
       createdAt: DateTime.now(),
     );
 
-    // Navigate to UPI payment screen
-    await Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (_) => UpipaymentScreen(
-          totalAmount: cartProvider.totalAmount,
-          orderId: 'temp', // Will be replaced after order creation
-        ),
-      ),
-    );
-
-    // After payment screenshot upload, create order
+    // Create order first
     setState(() => _isProcessing = true);
 
     try {
       final createdOrder = await _orderService.createOrder(order);
 
       if (createdOrder != null && mounted) {
-        // Clear cart
-        cartProvider.clear();
-
-        // Navigate to payment processing screen
-        Navigator.of(context).pushReplacement(
+        // Navigate to UPI payment screen with actual order ID
+        await Navigator.push(
+          context,
           MaterialPageRoute(
-            builder: (_) => PaymentProcessingScreen(
-              orderId: createdOrder.id,
+            builder: (_) => UpipaymentScreen(
               totalAmount: cartProvider.totalAmount,
+              orderId: createdOrder.id,
             ),
           ),
         );
+
+        // Clear cart after payment
+        cartProvider.clear();
+
+        // Navigate to orders screen
+        if (mounted) {
+          Navigator.of(context).pushReplacement(
+            MaterialPageRoute(
+              builder: (_) => const OrdersScreen(),
+            ),
+          );
+        }
       }
     } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Error placing order: $e')),
+          SnackBar(content: Text('Error creating order: $e')),
         );
       }
     } finally {
-      if (mounted) {
-        setState(() => _isProcessing = false);
-      }
+      setState(() => _isProcessing = false);
     }
   }
 

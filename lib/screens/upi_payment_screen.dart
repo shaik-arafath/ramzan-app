@@ -46,12 +46,13 @@ class _UpipaymentScreenState extends State<UpipaymentScreen> {
     await Future.delayed(const Duration(seconds: 2));
 
     if (mounted) {
-      Navigator.of(context).pushReplacementNamed(
-        '/payment-processing',
-        arguments: {
-          'orderId': widget.orderId,
-          'totalAmount': widget.totalAmount,
-        },
+      Navigator.of(context).pushReplacement(
+        MaterialPageRoute(
+          builder: (_) => PaymentProcessingScreen(
+            orderId: widget.orderId,
+            totalAmount: widget.totalAmount,
+          ),
+        ),
       );
     }
 
