@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 import '../providers/cart_provider.dart';
 import '../models/cart_item.dart';
 import '../models/address.dart';
@@ -28,7 +29,15 @@ class _CartScreenState extends State<CartScreen> {
   @override
   void initState() {
     super.initState();
-    _loadDefaultAddress();
+    _checkAuthAndLoadAddress();
+  }
+
+  Future<void> _checkAuthAndLoadAddress() async {
+    final userId = Supabase.instance.client.auth.currentUser?.id;
+    print('Cart screen - Current user ID: $userId');
+    if (userId != null && userId.isNotEmpty) {
+      await _loadDefaultAddress();
+    }
   }
 
   Future<void> _loadDefaultAddress() async {
@@ -61,6 +70,16 @@ class _CartScreenState extends State<CartScreen> {
       }
     }
 
+    // Get current user ID
+    final userId = Supabase.instance.client.auth.currentUser?.id;
+    print('Current user ID: $userId');
+    if (userId == null || userId.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Please login to place an order')),
+      );
+      return;
+    }
+
     // Create order object
     final orderItems = cartProvider.items.map((item) => OrderItem(
       productId: item.product.id,
@@ -72,7 +91,7 @@ class _CartScreenState extends State<CartScreen> {
 
     final order = Order(
       id: '',
-      userId: '',
+      userId: userId,
       items: orderItems,
       shippingAddress: _selectedAddress!,
       totalAmount: cartProvider.totalAmount,
