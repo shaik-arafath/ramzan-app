@@ -776,15 +776,7 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
 
                     const SizedBox(height: 20),
 
-                    _buildSehriIftarCards(),
-
-                    const SizedBox(height: 20),
-
                     _buildNextPrayerCard(),
-
-                    const SizedBox(height: 20),
-
-                    _buildFeaturedProducts(),
 
                     const SizedBox(height: 20),
 
@@ -822,47 +814,33 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
 
       ),
 
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-
-      floatingActionButton: Container(
-
-        margin: const EdgeInsets.only(bottom: 10),
-
-        child: FloatingActionButton(
-
-          onPressed: () {
-
-            Navigator.push(
-
-              context,
-
-              MaterialPageRoute(builder: (context) => const ShopScreen()),
-
-            );
-
-          },
-
-          backgroundColor: const Color(0xFFE8B931),
-
-          child: const Icon(Icons.shopping_bag, color: Colors.black, size: 28),
-
-        ),
-
-      ),
-
       bottomNavigationBar: Container(
 
-        height: 80,
+        height: 90,
 
         decoration: BoxDecoration(
 
-          color: AppColors.darkBlack,
+          gradient: LinearGradient(
+
+            begin: Alignment.topCenter,
+
+            end: Alignment.bottomCenter,
+
+            colors: [
+
+              AppColors.darkBlack,
+
+              AppColors.black,
+
+            ],
+
+          ),
 
           borderRadius: const BorderRadius.only(
 
-            topLeft: Radius.circular(20),
+            topLeft: Radius.circular(30),
 
-            topRight: Radius.circular(20),
+            topRight: Radius.circular(30),
 
           ),
 
@@ -872,11 +850,11 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
 
             BoxShadow(
 
-              color: AppColors.gold.withOpacity(0.3),
+              color: AppColors.gold.withOpacity(0.4),
 
-              blurRadius: 10,
+              blurRadius: 15,
 
-              offset: const Offset(0, -2),
+              offset: const Offset(0, -5),
 
             ),
 
@@ -892,53 +870,93 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
 
             // Quran icon (left)
 
-            Padding(
+            Expanded(
 
-              padding: const EdgeInsets.symmetric(vertical: 15),
+              child: Padding(
 
-              child: InkWell(
+                padding: const EdgeInsets.symmetric(vertical: 20),
 
-                onTap: () {
+                child: InkWell(
 
-                  Navigator.push(
+                  onTap: () {
 
-                    context,
+                    Navigator.push(
 
-                    MaterialPageRoute(builder: (context) => const DailyQuranScreen()),
+                      context,
 
-                  );
+                      MaterialPageRoute(builder: (context) => const DailyQuranScreen()),
 
-                },
+                    );
 
-                child: Container(
+                  },
 
-                  width: 50,
+                  child: Column(
 
-                  height: 50,
+                    mainAxisAlignment: MainAxisAlignment.center,
 
-                  decoration: BoxDecoration(
+                    children: [
 
-                    shape: BoxShape.circle,
+                      Container(
 
-                    color: AppColors.gold,
+                        width: 55,
 
-                    boxShadow: [
+                        height: 55,
 
-                      BoxShadow(
+                        decoration: BoxDecoration(
 
-                        color: AppColors.gold.withOpacity(0.5),
+                          shape: BoxShape.circle,
 
-                        blurRadius: 10,
+                          gradient: LinearGradient(
 
-                        spreadRadius: 2,
+                            begin: Alignment.topLeft,
+
+                            end: Alignment.bottomRight,
+
+                            colors: [AppColors.gold, AppColors.goldLight],
+
+                          ),
+
+                          boxShadow: [
+
+                            BoxShadow(
+
+                              color: AppColors.gold.withOpacity(0.6),
+
+                              blurRadius: 15,
+
+                              spreadRadius: 3,
+
+                            ),
+
+                          ],
+
+                        ),
+
+                        child: const Icon(Icons.menu_book, color: Colors.black, size: 28),
+
+                      ),
+
+                      const SizedBox(height: 6),
+
+                      const Text(
+
+                        'Quran',
+
+                        style: TextStyle(
+
+                          color: AppColors.gold,
+
+                          fontSize: 12,
+
+                          fontWeight: FontWeight.w600,
+
+                        ),
 
                       ),
 
                     ],
 
                   ),
-
-                  child: const Icon(Icons.menu_book, color: Colors.black, size: 24),
 
                 ),
 
@@ -946,57 +964,167 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
 
             ),
 
-            const SizedBox(width: 60), // Space for FAB
+            const SizedBox(width: 20), // Space for FAB
 
-            // Bayans icon (right)
+            // Shop FAB (center)
 
             Padding(
 
-              padding: const EdgeInsets.symmetric(vertical: 15),
+              padding: const EdgeInsets.only(bottom: 25),
 
-              child: InkWell(
+              child: Container(
 
-                onTap: () {
+                width: 70,
 
-                  Navigator.push(
+                height: 70,
 
-                    context,
+                decoration: BoxDecoration(
 
-                    MaterialPageRoute(builder: (context) => const BayansFeedScreen()),
+                  shape: BoxShape.circle,
 
-                  );
+                  gradient: LinearGradient(
 
-                },
+                    begin: Alignment.topLeft,
 
-                child: Container(
+                    end: Alignment.bottomRight,
 
-                  width: 50,
+                    colors: [AppColors.gold, AppColors.goldLight],
 
-                  height: 50,
+                  ),
 
-                  decoration: BoxDecoration(
+                  boxShadow: [
 
-                    shape: BoxShape.circle,
+                    BoxShadow(
 
-                    color: AppColors.gold,
+                      color: AppColors.gold.withOpacity(0.7),
 
-                    boxShadow: [
+                      blurRadius: 20,
 
-                      BoxShadow(
+                      spreadRadius: 5,
 
-                        color: AppColors.gold.withOpacity(0.5),
+                    ),
 
-                        blurRadius: 10,
+                  ],
 
-                        spreadRadius: 2,
+                ),
+
+                child: FloatingActionButton(
+
+                  onPressed: () {
+
+                    Navigator.push(
+
+                      context,
+
+                      MaterialPageRoute(builder: (context) => const ShopScreen()),
+
+                    );
+
+                  },
+
+                  backgroundColor: Colors.transparent,
+
+                  elevation: 0,
+
+                  child: const Icon(Icons.shopping_bag, color: Colors.black, size: 32),
+
+                ),
+
+              ),
+
+            ),
+
+            const SizedBox(width: 20), // Space for FAB
+
+            // Bayans icon (right)
+
+            Expanded(
+
+              child: Padding(
+
+                padding: const EdgeInsets.symmetric(vertical: 20),
+
+                child: InkWell(
+
+                  onTap: () {
+
+                    Navigator.push(
+
+                      context,
+
+                      MaterialPageRoute(builder: (context) => const BayansFeedScreen()),
+
+                    );
+
+                  },
+
+                  child: Column(
+
+                    mainAxisAlignment: MainAxisAlignment.center,
+
+                    children: [
+
+                      Container(
+
+                        width: 55,
+
+                        height: 55,
+
+                        decoration: BoxDecoration(
+
+                          shape: BoxShape.circle,
+
+                          gradient: LinearGradient(
+
+                            begin: Alignment.topLeft,
+
+                            end: Alignment.bottomRight,
+
+                            colors: [AppColors.gold, AppColors.goldLight],
+
+                          ),
+
+                          boxShadow: [
+
+                            BoxShadow(
+
+                              color: AppColors.gold.withOpacity(0.6),
+
+                              blurRadius: 15,
+
+                              spreadRadius: 3,
+
+                            ),
+
+                          ],
+
+                        ),
+
+                        child: const Icon(Icons.play_circle, color: Colors.black, size: 28),
+
+                      ),
+
+                      const SizedBox(height: 6),
+
+                      const Text(
+
+                        'Bayans',
+
+                        style: TextStyle(
+
+                          color: AppColors.gold,
+
+                          fontSize: 12,
+
+                          fontWeight: FontWeight.w600,
+
+                        ),
 
                       ),
 
                     ],
 
                   ),
-
-                  child: const Icon(Icons.play_circle, color: Colors.black, size: 24),
 
                 ),
 
@@ -1329,8 +1457,8 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
 
         child: Container(
 
-          width: 40,
-          height: 40,
+          width: 50,
+          height: 50,
 
           decoration: BoxDecoration(
 
@@ -2016,562 +2144,6 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
   Widget _goldSeparator() {
 
     return Icon(Icons.chevron_right, color: AppColors.gold, size: 28);
-
-  }
-
-
-
-  Widget _buildFeaturedProducts() {
-
-    final featuredProducts = ProductData.getProducts().take(4).toList();
-
-    final cartProvider = Provider.of<CartProvider>(context);
-
-
-
-    return Column(
-
-      crossAxisAlignment: CrossAxisAlignment.start,
-
-      children: [
-
-        Row(
-
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-
-          children: [
-
-            const Text(
-
-              'Featured Products',
-
-              style: TextStyle(
-
-                fontSize: 20,
-
-                fontWeight: FontWeight.bold,
-
-                color: Colors.white,
-
-              ),
-
-            ),
-
-            AnimatedContainer(
-
-              duration: const Duration(milliseconds: 200),
-
-              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-
-              decoration: BoxDecoration(
-
-                color: AppColors.gold.withOpacity(0.2),
-
-                borderRadius: BorderRadius.circular(20),
-
-                border: Border.all(color: AppColors.gold),
-
-              ),
-
-              child: InkWell(
-
-                onTap: () {
-
-                  Navigator.push(
-
-                    context,
-
-                    MaterialPageRoute(builder: (context) => const ShopScreen()),
-
-                  );
-
-                },
-
-                child: const Text(
-
-                  'View All',
-
-                  style: TextStyle(
-
-                    color: AppColors.gold,
-
-                    fontWeight: FontWeight.bold,
-
-                  ),
-
-                ),
-
-              ),
-
-            ),
-
-          ],
-
-        ),
-
-        const SizedBox(height: 12),
-
-        SizedBox(
-
-          height: 200,
-
-          child: ListView.builder(
-
-            scrollDirection: Axis.horizontal,
-
-            itemCount: featuredProducts.length,
-
-            itemBuilder: (context, index) {
-
-              final product = featuredProducts[index];
-
-              return Container(
-
-                width: 160,
-
-                margin: const EdgeInsets.only(right: 12),
-
-                child: _buildFeaturedProductCard(product, cartProvider),
-
-              );
-
-            },
-
-          ),
-
-        ),
-
-      ],
-
-    );
-
-  }
-
-
-
-  Widget _buildFeaturedProductCard(Product product, CartProvider cartProvider) {
-
-    return Container(
-
-      decoration: BoxDecoration(
-
-        gradient: LinearGradient(
-
-          begin: Alignment.topLeft,
-
-          end: Alignment.bottomRight,
-
-          colors: [
-
-            const Color(0xFF1E3A5F),
-
-            const Color(0xFF0A1628),
-
-          ],
-
-        ),
-
-        borderRadius: BorderRadius.circular(16),
-
-        border: Border.all(
-
-          color: const Color(0xFFE8B931).withOpacity(0.3),
-
-          width: 1,
-
-        ),
-
-        boxShadow: [
-
-          BoxShadow(
-
-            color: const Color(0xFFE8B931).withOpacity(0.1),
-
-            blurRadius: 10,
-
-            offset: const Offset(0, 4),
-
-          ),
-
-        ],
-
-      ),
-
-      child: InkWell(
-
-        onTap: () {
-
-          Navigator.push(
-
-            context,
-
-            MaterialPageRoute(
-
-              builder: (context) => ShopScreen(),
-
-            ),
-
-          );
-
-        },
-
-        borderRadius: BorderRadius.circular(16),
-
-        child: Column(
-
-          crossAxisAlignment: CrossAxisAlignment.start,
-
-          children: [
-
-            Expanded(
-
-              child: ClipRRect(
-
-                borderRadius: const BorderRadius.vertical(
-
-                  top: Radius.circular(16),
-
-                ),
-
-                child: AppImage(
-
-                  source: product.imageUrl,
-
-                  fit: BoxFit.cover,
-
-                  width: double.infinity,
-
-                  iconSize: 30,
-
-                ),
-
-              ),
-
-            ),
-
-            Padding(
-
-              padding: const EdgeInsets.all(10),
-
-              child: Column(
-
-                crossAxisAlignment: CrossAxisAlignment.start,
-
-                children: [
-
-                  Text(
-
-                    product.name,
-
-                    style: const TextStyle(
-
-                      fontWeight: FontWeight.bold,
-
-                      fontSize: 12,
-
-                      color: Colors.white,
-
-                    ),
-
-                    maxLines: 1,
-
-                    overflow: TextOverflow.ellipsis,
-
-                  ),
-
-                  const SizedBox(height: 4),
-
-                  Row(
-
-                    children: [
-
-                      const Icon(
-
-                        Icons.star,
-
-                        size: 10,
-
-                        color: Color(0xFFE8B931),
-
-                      ),
-
-                      const SizedBox(width: 4),
-
-                      Text(
-
-                        product.rating.toString(),
-
-                        style: const TextStyle(fontSize: 10, color: Colors.white70),
-
-                      ),
-
-                    ],
-
-                  ),
-
-                  const SizedBox(height: 4),
-
-                  Row(
-
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-
-                    children: [
-
-                      Text(
-
-                        '\$${product.price.toStringAsFixed(2)}',
-
-                        style: const TextStyle(
-
-                          color: Color(0xFFE8B931),
-
-                          fontWeight: FontWeight.bold,
-
-                          fontSize: 14,
-
-                        ),
-
-                      ),
-
-                      AnimatedContainer(
-
-                        duration: const Duration(milliseconds: 200),
-
-                        padding: const EdgeInsets.all(6),
-
-                        decoration: BoxDecoration(
-
-                          color: const Color(0xFFE8B931),
-
-                          shape: BoxShape.circle,
-
-                          boxShadow: [
-
-                            BoxShadow(
-
-                              color: const Color(0xFFE8B931).withOpacity(0.5),
-
-                              blurRadius: 8,
-
-                              spreadRadius: 2,
-
-                            ),
-
-                          ],
-
-                        ),
-
-                        child: InkWell(
-
-                          onTap: () {
-
-                            cartProvider.addItem(product);
-
-                            ScaffoldMessenger.of(context).showSnackBar(
-
-                              SnackBar(
-
-                                content: Text('${product.name} added to cart'),
-
-                                duration: const Duration(seconds: 1),
-
-                                backgroundColor: const Color(0xFFE8B931),
-
-                                behavior: SnackBarBehavior.floating,
-
-                              ),
-
-                            );
-
-                          },
-
-                          child: const Icon(
-
-                            Icons.add,
-
-                            size: 14,
-
-                            color: Colors.black,
-
-                          ),
-
-                        ),
-
-                      ),
-
-                    ],
-
-                  ),
-
-                ],
-
-              ),
-
-            ),
-
-          ],
-
-        ),
-
-      ),
-
-    );
-
-  }
-
-
-
-  Widget _buildSehriIftarCards() {
-
-    return Stack(
-
-      clipBehavior: Clip.none,
-
-      children: [
-
-        Row(
-
-          children: [
-
-            Expanded(child: _buildTimingCard('Sehri Time', _sehriTimeOverride ?? _todayData!.sehriTime, false)),
-
-            const SizedBox(width: 12),
-
-            Expanded(child: _buildTimingCard('Iftar Time', _iftarTimeOverride ?? _todayData!.iftarTime, true)),
-
-          ],
-
-        ),
-
-        // Golden crescent overlay
-
-        Positioned(
-
-          left: 0,
-
-          right: 0,
-
-          top: -16,
-
-          child: Center(
-
-            child: Container(
-
-              padding: const EdgeInsets.all(8),
-
-              decoration: BoxDecoration(
-
-                color: AppColors.darkBlack,
-
-                shape: BoxShape.circle,
-
-                boxShadow: [
-
-                  BoxShadow(color: AppColors.gold.withOpacity(0.3), blurRadius: 12, spreadRadius: 2),
-
-                ],
-
-              ),
-
-              child: Icon(Icons.nightlight_round, color: AppColors.gold, size: 36),
-
-            ),
-
-          ),
-
-        ),
-
-      ],
-
-    );
-
-  }
-
-
-
-  Widget _buildTimingCard(String label, String time, bool isIftar) {
-
-    return Container(
-
-      padding: const EdgeInsets.fromLTRB(16, 28, 16, 16),
-
-      decoration: BoxDecoration(
-
-        color: AppColors.darkBlack,
-
-        borderRadius: BorderRadius.circular(16),
-
-        boxShadow: [
-
-          BoxShadow(color: Colors.black.withOpacity(0.3), blurRadius: 8, offset: const Offset(0, 4)),
-
-        ],
-
-      ),
-
-      child: Column(
-
-        crossAxisAlignment: CrossAxisAlignment.start,
-
-        children: [
-
-          Text(
-
-            label,
-
-            style: const TextStyle(
-
-              fontSize: 12,
-
-              color: AppColors.white70,
-
-              fontWeight: FontWeight.w500,
-
-            ),
-
-          ),
-
-          const SizedBox(height: 8),
-
-          Text(
-
-            _to12Hour(time),
-
-            style: TextStyle(
-
-              fontSize: 22,
-
-              fontWeight: FontWeight.bold,
-
-              color: AppColors.white,
-
-            ),
-
-          ),
-
-          const SizedBox(height: 12),
-
-          Container(
-
-            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-
-            decoration: BoxDecoration(
-
-              color: AppColors.gold,
-
-              borderRadius: BorderRadius.circular(8),
-
-            ),
-
-            child: const Text('Siren Alert', style: TextStyle(color: Colors.black, fontSize: 12, fontWeight: FontWeight.w700)),
-
-          ),
-
-        ],
-
-      ),
-
-    );
 
   }
 
