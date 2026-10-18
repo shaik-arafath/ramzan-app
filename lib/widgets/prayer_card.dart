@@ -12,12 +12,12 @@ class PrayerCard extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: AppColors.darkBlack,
+        color: AppColors.gold,
         borderRadius: BorderRadius.circular(16),
         border: Border.all(color: AppColors.gold, width: 2),
         boxShadow: [
           BoxShadow(
-            color: AppColors.black,
+            color: AppColors.gold.withOpacity(0.3),
             blurRadius: 8,
             offset: const Offset(0, 2),
           ),
@@ -29,18 +29,18 @@ class PrayerCard extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Icon(Icons.chevron_right, color: AppColors.gold, size: 24),
+              Icon(Icons.chevron_right, color: Colors.black, size: 24),
               const SizedBox(width: 8),
               const Text(
                 'Prayer Times',
                 style: TextStyle(
                   fontSize: 20,
                   fontWeight: FontWeight.bold,
-                  color: AppColors.white,
+                  color: Colors.black,
                 ),
               ),
               const SizedBox(width: 8),
-              Icon(Icons.chevron_left, color: AppColors.gold, size: 24),
+              Icon(Icons.chevron_left, color: Colors.black, size: 24),
             ],
           ),
           const SizedBox(height: 16),
@@ -64,7 +64,7 @@ class PrayerCard extends StatelessWidget {
                   style: const TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.bold,
-                    color: AppColors.gold,
+                    color: Colors.black,
                   ),
                 ),
                 const SizedBox(height: 2),
@@ -72,7 +72,7 @@ class PrayerCard extends StatelessWidget {
                   prayer.name,
                   style: const TextStyle(
                     fontSize: 14,
-                    color: AppColors.white70,
+                    color: Colors.black87,
                   ),
                 ),
               ],
@@ -81,7 +81,7 @@ class PrayerCard extends StatelessWidget {
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
             decoration: BoxDecoration(
-              color: AppColors.gold,
+              color: Colors.black,
               borderRadius: BorderRadius.circular(8),
             ),
             child: Text(
@@ -89,7 +89,7 @@ class PrayerCard extends StatelessWidget {
               style: const TextStyle(
                 fontSize: 18,
                 fontWeight: FontWeight.bold,
-                color: AppColors.white,
+                color: AppColors.gold,
               ),
             ),
           ),

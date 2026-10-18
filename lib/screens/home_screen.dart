@@ -774,8 +774,6 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
 
                   children: [
 
-                    _buildDateSection(),
-
                     const SizedBox(height: 20),
 
                     _buildSehriIftarCards(),
@@ -795,10 +793,6 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
                     const SizedBox(height: 20),
 
                     _buildProgressCards(),
-
-                    const SizedBox(height: 20),
-
-                    _buildRamadanTips(),
 
                     const SizedBox(height: 24),
 
@@ -828,35 +822,189 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
 
       ),
 
-      floatingActionButton: FloatingActionButton.extended(
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
 
-        onPressed: () {
+      floatingActionButton: Container(
 
-          Navigator.push(
+        margin: const EdgeInsets.only(bottom: 10),
 
-            context,
+        child: FloatingActionButton(
 
-            MaterialPageRoute(builder: (context) => const ShopScreen()),
+          onPressed: () {
 
-          );
+            Navigator.push(
 
-        },
+              context,
 
-        backgroundColor: const Color(0xFFE8B931),
+              MaterialPageRoute(builder: (context) => const ShopScreen()),
 
-        icon: const Icon(Icons.shopping_bag, color: Colors.black),
+            );
 
-        label: const Text(
+          },
 
-          'Shop',
+          backgroundColor: const Color(0xFFE8B931),
 
-          style: TextStyle(
+          child: const Icon(Icons.shopping_bag, color: Colors.black, size: 28),
 
-            color: Colors.black,
+        ),
 
-            fontWeight: FontWeight.bold,
+      ),
+
+      bottomNavigationBar: Container(
+
+        height: 80,
+
+        decoration: BoxDecoration(
+
+          color: AppColors.darkBlack,
+
+          borderRadius: const BorderRadius.only(
+
+            topLeft: Radius.circular(20),
+
+            topRight: Radius.circular(20),
 
           ),
+
+          border: Border.all(color: AppColors.gold, width: 2),
+
+          boxShadow: [
+
+            BoxShadow(
+
+              color: AppColors.gold.withOpacity(0.3),
+
+              blurRadius: 10,
+
+              offset: const Offset(0, -2),
+
+            ),
+
+          ],
+
+        ),
+
+        child: Row(
+
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+
+          children: [
+
+            // Quran icon (left)
+
+            Padding(
+
+              padding: const EdgeInsets.symmetric(vertical: 15),
+
+              child: InkWell(
+
+                onTap: () {
+
+                  Navigator.push(
+
+                    context,
+
+                    MaterialPageRoute(builder: (context) => const DailyQuranScreen()),
+
+                  );
+
+                },
+
+                child: Container(
+
+                  width: 50,
+
+                  height: 50,
+
+                  decoration: BoxDecoration(
+
+                    shape: BoxShape.circle,
+
+                    color: AppColors.gold,
+
+                    boxShadow: [
+
+                      BoxShadow(
+
+                        color: AppColors.gold.withOpacity(0.5),
+
+                        blurRadius: 10,
+
+                        spreadRadius: 2,
+
+                      ),
+
+                    ],
+
+                  ),
+
+                  child: const Icon(Icons.menu_book, color: Colors.black, size: 24),
+
+                ),
+
+              ),
+
+            ),
+
+            const SizedBox(width: 60), // Space for FAB
+
+            // Bayans icon (right)
+
+            Padding(
+
+              padding: const EdgeInsets.symmetric(vertical: 15),
+
+              child: InkWell(
+
+                onTap: () {
+
+                  Navigator.push(
+
+                    context,
+
+                    MaterialPageRoute(builder: (context) => const BayansFeedScreen()),
+
+                  );
+
+                },
+
+                child: Container(
+
+                  width: 50,
+
+                  height: 50,
+
+                  decoration: BoxDecoration(
+
+                    shape: BoxShape.circle,
+
+                    color: AppColors.gold,
+
+                    boxShadow: [
+
+                      BoxShadow(
+
+                        color: AppColors.gold.withOpacity(0.5),
+
+                        blurRadius: 10,
+
+                        spreadRadius: 2,
+
+                      ),
+
+                    ],
+
+                  ),
+
+                  child: const Icon(Icons.play_circle, color: Colors.black, size: 24),
+
+                ),
+
+              ),
+
+            ),
+
+          ],
 
         ),
 
@@ -1014,34 +1162,21 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
 
           child: Container(
 
-            padding: const EdgeInsets.all(6),
+            width: 40,
+            height: 40,
 
             decoration: BoxDecoration(
-
-              color: Colors.black.withOpacity(0.35),
 
               shape: BoxShape.circle,
 
             ),
 
-            child: Icon(
-
-              authProvider.isAuthenticated && authProvider.isAdmin
-
-                  ? Icons.admin_panel_settings
-
-                  : authProvider.isAuthenticated
-
-                      ? Icons.account_circle
-
-                      : Icons.login,
-
-              color: Colors.white,
-
-              size: 20,
-
+            child: ClipOval(
+              child: Image.asset(
+                'assets/edited-photo (5).png',
+                fit: BoxFit.cover,
+              ),
             ),
-
           ),
 
         );
@@ -1194,17 +1329,12 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
 
         child: Container(
 
-          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+          width: 40,
+          height: 40,
 
           decoration: BoxDecoration(
 
-            gradient: LinearGradient(
-
-              colors: [AppColors.gold, AppColors.goldLight],
-
-            ),
-
-            borderRadius: BorderRadius.circular(20),
+            shape: BoxShape.circle,
 
             boxShadow: [
 
@@ -1227,44 +1357,13 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
             onTap: _showShopSelectionDialog,
 
             borderRadius: BorderRadius.circular(20),
-
-            child: const Row(
-
-              mainAxisSize: MainAxisSize.min,
-
-              children: [
-
-                Icon(
-
-                  Icons.store,
-
-                  color: Colors.black,
-
-                  size: 18,
-
-                ),
-
-                SizedBox(width: 6),
-
-                Text(
-
-                  'Shop',
-
-                  style: TextStyle(
-
-                    color: Colors.black,
-
-                    fontWeight: FontWeight.bold,
-
-                    fontSize: 14,
-
-                  ),
-
-                ),
-
-              ],
-
+            child: ClipOval(
+              child: Image.asset(
+                'assets/edited-photo (6).png',
+                fit: BoxFit.cover,
+              ),
             ),
+
 
           ),
 
@@ -1734,23 +1833,17 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
 
         decoration: BoxDecoration(
 
-          gradient: LinearGradient(
+          borderRadius: const BorderRadius.only(
 
-            begin: Alignment.topCenter,
+            bottomLeft: Radius.circular(32),
 
-            end: Alignment.bottomCenter,
-
-            colors: [
-
-              AppColors.black,
-
-              AppColors.darkBlack,
-
-              AppColors.mediumBlack,
-
-            ],
+            bottomRight: Radius.circular(32),
 
           ),
+
+        ),
+
+        child: ClipRRect(
 
           borderRadius: const BorderRadius.only(
 
@@ -1760,109 +1853,61 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
 
           ),
 
-          border: Border.all(
+          child: Stack(
 
-            color: AppColors.gold,
+            fit: StackFit.expand,
 
-            width: 2,
+            children: [
 
-          ),
+              // Background image
+              Positioned.fill(
+                child: Image.asset(
+                  'assets/Picsart_26-10-11_23-49-02-904.jpg',
+                  fit: BoxFit.cover,
+                ),
+              ),
 
-          boxShadow: [
+              // Top-right notification, shop, cart & settings icons inside header
 
-            BoxShadow(
+              Positioned(
 
-              color: AppColors.gold.withOpacity(0.3),
+                top: 40,
 
-              blurRadius: 20,
+                right: 16,
 
-              spreadRadius: 5,
+                child: Consumer<CartProvider>(
 
-            ),
+                  builder: (context, cartProvider, child) {
 
-          ],
+                    return Row(
 
-        ),
+                      mainAxisSize: MainAxisSize.min,
 
-        child: Stack(
+                      children: [
 
-          children: [
+                        _buildShopIcon(),
 
-            // Logo and title
-            Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text(
-                    'HALAL WORLD',
-                    style: TextStyle(
-                      fontSize: 32,
-                      fontWeight: FontWeight.bold,
-                      color: AppColors.gold,
-                      letterSpacing: 3,
-                      shadows: [
-                        Shadow(
-                          color: AppColors.gold.withOpacity(0.5),
-                          blurRadius: 10,
-                          offset: const Offset(0, 2),
-                        ),
+                        const SizedBox(width: 12),
+
+                        _buildNotificationIcon(),
+
+                        const SizedBox(width: 12),
+
+                        _buildCartIcon(cartProvider),
+
+                        const SizedBox(width: 12),
+
+                        _buildSettingsIcon(),
+
                       ],
-                    ),
-                  ),
-                  const SizedBox(height: 8),
-                  Text(
-                    'Islamic Shopping App',
-                    style: TextStyle(
-                      fontSize: 14,
-                      color: Colors.white.withOpacity(0.8),
-                      letterSpacing: 2,
-                    ),
-                  ),
-                ],
-              ),
-            ),
 
-            // Top-right notification, shop, cart & settings icons inside header
+                    );
 
-            Positioned(
+                  },
 
-              top: 40,
-
-              right: 16,
-
-              child: Consumer<CartProvider>(
-
-                builder: (context, cartProvider, child) {
-
-                  return Row(
-
-                    mainAxisSize: MainAxisSize.min,
-
-                    children: [
-
-                      _buildShopIcon(),
-
-                      const SizedBox(width: 12),
-
-                      _buildNotificationIcon(),
-
-                      const SizedBox(width: 12),
-
-                      _buildCartIcon(cartProvider),
-
-                      const SizedBox(width: 12),
-
-                      _buildSettingsIcon(),
-
-                    ],
-
-                  );
-
-                },
+                ),
 
               ),
-
-            ),
 
           ],
 
