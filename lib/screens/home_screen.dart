@@ -1290,8 +1290,8 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
 
           child: Container(
 
-            width: 40,
-            height: 40,
+            width: 50,
+            height: 50,
 
             decoration: BoxDecoration(
 
@@ -1457,8 +1457,8 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
 
         child: Container(
 
-          width: 50,
-          height: 50,
+          width: 60,
+          height: 60,
 
           decoration: BoxDecoration(
 
