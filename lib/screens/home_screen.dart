@@ -816,7 +816,7 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
 
       bottomNavigationBar: Container(
 
-        height: 90,
+        height: 100,
 
         decoration: BoxDecoration(
 
@@ -874,7 +874,7 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
 
               child: Padding(
 
-                padding: const EdgeInsets.symmetric(vertical: 20),
+                padding: const EdgeInsets.symmetric(vertical: 15),
 
                 child: InkWell(
 
@@ -898,9 +898,9 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
 
                       Container(
 
-                        width: 55,
+                        width: 50,
 
-                        height: 55,
+                        height: 50,
 
                         decoration: BoxDecoration(
 
@@ -932,11 +932,11 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
 
                         ),
 
-                        child: const Icon(Icons.menu_book, color: Colors.black, size: 28),
+                        child: const Icon(Icons.menu_book, color: Colors.black, size: 26),
 
                       ),
 
-                      const SizedBox(height: 6),
+                      const SizedBox(height: 4),
 
                       const Text(
 
@@ -946,7 +946,7 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
 
                           color: AppColors.gold,
 
-                          fontSize: 12,
+                          fontSize: 11,
 
                           fontWeight: FontWeight.w600,
 
@@ -964,13 +964,13 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
 
             ),
 
-            const SizedBox(width: 20), // Space for FAB
+            const SizedBox(width: 15), // Space for FAB
 
             // Shop FAB (center)
 
             Padding(
 
-              padding: const EdgeInsets.only(bottom: 25),
+              padding: const EdgeInsets.only(bottom: 20),
 
               child: Container(
 
@@ -1034,7 +1034,7 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
 
             ),
 
-            const SizedBox(width: 20), // Space for FAB
+            const SizedBox(width: 15), // Space for FAB
 
             // Bayans icon (right)
 
@@ -1042,7 +1042,7 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
 
               child: Padding(
 
-                padding: const EdgeInsets.symmetric(vertical: 20),
+                padding: const EdgeInsets.symmetric(vertical: 15),
 
                 child: InkWell(
 
@@ -1066,9 +1066,9 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
 
                       Container(
 
-                        width: 55,
+                        width: 50,
 
-                        height: 55,
+                        height: 50,
 
                         decoration: BoxDecoration(
 
@@ -1100,11 +1100,11 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
 
                         ),
 
-                        child: const Icon(Icons.play_circle, color: Colors.black, size: 28),
+                        child: const Icon(Icons.play_circle, color: Colors.black, size: 26),
 
                       ),
 
-                      const SizedBox(height: 6),
+                      const SizedBox(height: 4),
 
                       const Text(
 
@@ -1114,7 +1114,7 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
 
                           color: AppColors.gold,
 
-                          fontSize: 12,
+                          fontSize: 11,
 
                           fontWeight: FontWeight.w600,
 
@@ -1457,8 +1457,8 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
 
         child: Container(
 
-          width: 70,
-          height: 70,
+          width: 80,
+          height: 80,
 
           decoration: BoxDecoration(
 
