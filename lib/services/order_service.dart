@@ -16,9 +16,21 @@ class OrderService {
           .order('created_at', ascending: false);
 
       final data = response as List<dynamic>;
-      return data.map((row) => Order.fromMap(row as Map<String, dynamic>)).toList();
+      final orders = <Order>[];
+      
+      for (final row in data) {
+        try {
+          orders.add(Order.fromMap(row as Map<String, dynamic>));
+        } catch (e) {
+          print('Error parsing order: $e');
+          print('Order data: $row');
+        }
+      }
+      
+      return orders;
     } catch (e) {
       print('Error fetching orders: $e');
+      print('Error type: ${e.runtimeType}');
       return [];
     }
   }

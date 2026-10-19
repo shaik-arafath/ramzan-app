@@ -40,11 +40,48 @@ class Order {
         ?.map((item) => OrderItem.fromMap(item as Map<String, dynamic>))
         .toList() ?? [];
 
+    // Handle shipping_address with error handling
+    Address address;
+    try {
+      final addressData = map['shipping_address'] as Map<String, dynamic>?;
+      if (addressData != null && addressData.isNotEmpty) {
+        address = Address.fromMap(addressData);
+      } else {
+        // Create default address if missing
+        address = Address(
+          id: '',
+          userId: map['user_id'] as String? ?? '',
+          fullName: 'Unknown',
+          phone: '',
+          addressLine1: '',
+          addressLine2: '',
+          city: '',
+          state: '',
+          pincode: '',
+          createdAt: DateTime.now(),
+        );
+      }
+    } catch (e) {
+      print('Error parsing shipping address: $e');
+      address = Address(
+        id: '',
+        userId: map['user_id'] as String? ?? '',
+        fullName: 'Unknown',
+        phone: '',
+        addressLine1: '',
+        addressLine2: '',
+        city: '',
+        state: '',
+        pincode: '',
+        createdAt: DateTime.now(),
+      );
+    }
+
     return Order(
       id: map['id']?.toString() ?? '',
       userId: map['user_id'] as String? ?? '',
       items: itemsList,
-      shippingAddress: Address.fromMap(map['shipping_address'] as Map<String, dynamic>),
+      shippingAddress: address,
       totalAmount: (map['total_amount'] as num?)?.toDouble() ?? 0,
       shippingCost: (map['shipping_cost'] as num?)?.toDouble() ?? 0,
       paymentMethod: map['payment_method'] as String? ?? 'UPI',
