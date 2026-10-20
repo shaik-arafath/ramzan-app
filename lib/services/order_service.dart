@@ -11,7 +11,7 @@ class OrderService {
 
       final response = await _client
           .from('orders')
-          .select('id, user_id, items, shipping_address, total_amount, shipping_cost, payment_method, payment_status, order_status, created_at, estimated_delivery, payment_screenshot, tracking_status, current_location, estimated_delivery_date')
+          .select('*')
           .eq('user_id', userId)
           .order('created_at', ascending: false);
 
