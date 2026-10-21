@@ -28,7 +28,7 @@ class _OrderHistoryScreenState extends State<OrderHistoryScreen> {
       if (authProvider.user != null) {
         final response = await _supabase
             .from('orders')
-            .select('*, order_items(*, products(*))')
+            .select('*')
             .eq('user_id', authProvider.user!.id)
             .order('created_at', ascending: false);
         setState(() => _orders = response);
@@ -116,8 +116,8 @@ class _OrderHistoryScreenState extends State<OrderHistoryScreen> {
   }
 
   Widget _buildOrderCard(Map<String, dynamic> order) {
-    final orderItems = order['order_items'] as List<dynamic>? ?? [];
-    final status = order['status'] ?? 'pending';
+    final orderItems = order['items'] as List<dynamic>? ?? [];
+    final status = order['order_status'] ?? 'pending';
     final totalAmount = order['total_amount']?.toStringAsFixed(2) ?? '0.00';
     final orderDate = order['created_at']?.toString().split('T')[0] ?? '';
 
@@ -176,16 +176,15 @@ class _OrderHistoryScreenState extends State<OrderHistoryScreen> {
                 ),
                 const SizedBox(height: 12),
                 ...orderItems.map((item) {
-                  final product = item['products'];
                   return Padding(
                     padding: const EdgeInsets.only(bottom: 8),
                     child: Row(
                       children: [
-                        if (product != null && product['image_url'] != null)
+                        if (item['product_image_url'] != null)
                           ClipRRect(
                             borderRadius: BorderRadius.circular(8),
                             child: Image.network(
-                              product['image_url'],
+                              item['product_image_url'],
                               width: 50,
                               height: 50,
                               fit: BoxFit.cover,
@@ -205,7 +204,7 @@ class _OrderHistoryScreenState extends State<OrderHistoryScreen> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
-                                product?['name'] ?? 'Unknown Product',
+                                item['product_name'] ?? 'Unknown Product',
                                 style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w500),
                               ),
                               Text(
@@ -216,7 +215,7 @@ class _OrderHistoryScreenState extends State<OrderHistoryScreen> {
                           ),
                         ),
                         Text(
-                          '\$${item['price_at_order']?.toStringAsFixed(2) ?? '0.00'}',
+                          '\$${item['price']?.toStringAsFixed(2) ?? '0.00'}',
                           style: const TextStyle(color: Color(0xFFE8B931), fontWeight: FontWeight.bold),
                         ),
                       ],
@@ -225,19 +224,25 @@ class _OrderHistoryScreenState extends State<OrderHistoryScreen> {
                 }),
                 const SizedBox(height: 16),
                 if (order['shipping_address'] != null)
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const Text(
-                        'Shipping Address:',
-                        style: TextStyle(color: Color(0xFFE8B931), fontWeight: FontWeight.bold),
-                      ),
-                      const SizedBox(height: 4),
-                      Text(
-                        order['shipping_address'],
-                        style: const TextStyle(color: Colors.white70),
-                      ),
-                    ],
+                  Builder(
+                    builder: (context) {
+                      final address = order['shipping_address'] as Map<String, dynamic>?;
+                      if (address == null) return const SizedBox.shrink();
+                      return Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const Text(
+                            'Shipping Address:',
+                            style: TextStyle(color: Color(0xFFE8B931), fontWeight: FontWeight.bold),
+                          ),
+                          const SizedBox(height: 4),
+                          Text(
+                            '${address['full_name'] ?? ''}\n${address['address_line1'] ?? ''}, ${address['city'] ?? ''}, ${address['state'] ?? ''} - ${address['pincode'] ?? ''}',
+                            style: const TextStyle(color: Colors.white70),
+                          ),
+                        ],
+                      );
+                    },
                   ),
               ],
             ),
