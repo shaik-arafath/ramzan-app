@@ -1162,7 +1162,8 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
 
           Container(
 
-            padding: const EdgeInsets.all(6),
+            width: 32,
+            height: 32,
 
             decoration: BoxDecoration(
 
@@ -1172,11 +1173,13 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
 
             ),
 
-            child: Image.asset(
-              'assets/eeb232de024d77f9de9b0b4dfc96c3bf.jpg',
-              width: 20,
-              height: 20,
-              fit: BoxFit.cover,
+            child: ClipOval(
+              child: Image.asset(
+                'assets/eeb232de024d77f9de9b0b4dfc96c3bf.jpg',
+                fit: BoxFit.cover,
+                width: 32,
+                height: 32,
+              ),
             ),
 
           ),
@@ -1521,30 +1524,29 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
 
       ),
 
-      child: InkWell(
+      child: ClipOval(
+        child: InkWell(
 
-        onTap: () {
+          onTap: () {
 
-          Navigator.push(
+            Navigator.push(
 
-            context,
+              context,
 
-            MaterialPageRoute(builder: (context) => const MasjidListScreen()),
+              MaterialPageRoute(builder: (context) => const MasjidListScreen()),
 
-          );
+            );
 
-        },
+          },
 
-        borderRadius: BorderRadius.circular(22.5),
-
-        child: Padding(
-          padding: const EdgeInsets.all(8),
           child: Image.asset(
             'assets/d62aa914187bb01b0f7053eae30ff6d1.jpg',
             fit: BoxFit.cover,
+            width: 45,
+            height: 45,
           ),
-        ),
 
+        ),
       ),
 
     );
