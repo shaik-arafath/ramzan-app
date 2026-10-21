@@ -1,3 +1,4 @@
+import 'dart:math' as math;
 import 'package:supabase_flutter/supabase_flutter.dart';
 import '../models/masjid.dart';
 
@@ -44,7 +45,7 @@ class MasjidService {
       // 1 degree of latitude ≈ 111 km
       // 1 degree of longitude ≈ 111 km * cos(latitude)
       final double latDelta = radiusKm / 111;
-      final double lngDelta = radiusKm / (111 * (userLat * 3.141592653589793 / 180).cos());
+      final double lngDelta = radiusKm / (111 * math.cos(userLat * math.pi / 180));
 
       final minLat = userLat - latDelta;
       final maxLat = userLat + latDelta;

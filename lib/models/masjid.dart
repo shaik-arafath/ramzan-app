@@ -1,3 +1,5 @@
+import 'dart:math' as math;
+
 class Masjid {
   final String id;
   final String name;
@@ -105,16 +107,16 @@ class Masjid {
     const double earthRadius = 6371; // in kilometers
     final double dLat = _toRadians(latitude - userLat);
     final double dLng = _toRadians(longitude - userLng);
-    
-    final double a = (dLat / 2).sin() * (dLat / 2).sin() +
-        (dLat).cos() * (userLat).cos() *
-        (dLng / 2).sin() * (dLng / 2).sin();
-    final double c = 2 * (a.sqrt()).asin();
-    
+
+    final double a = math.pow(math.sin(dLat / 2), 2) +
+        math.cos(_toRadians(userLat)) * math.cos(_toRadians(latitude)) *
+        math.pow(math.sin(dLng / 2), 2);
+    final double c = 2 * math.asin(math.sqrt(a));
+
     return earthRadius * c;
   }
 
   double _toRadians(double degree) {
-    return degree * 3.141592653589793 / 180;
+    return degree * math.pi / 180;
   }
 }
