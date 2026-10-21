@@ -9,44 +9,71 @@ class PrayerCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: AppColors.gold,
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: AppColors.gold, width: 2),
-        boxShadow: [
-          BoxShadow(
-            color: AppColors.gold.withOpacity(0.3),
-            blurRadius: 8,
-            offset: const Offset(0, 2),
+    return Stack(
+      children: [
+        // Background image
+        ClipRRect(
+          borderRadius: BorderRadius.circular(16),
+          child: Image.asset(
+            'assets/7e789cf542209fc49a5582b23347764d.jpg',
+            fit: BoxFit.cover,
+            width: double.infinity,
+            height: double.infinity,
+            errorBuilder: (context, error, stackTrace) {
+              return Container(
+                color: AppColors.gold,
+              );
+            },
           ),
-        ],
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Icon(Icons.chevron_right, color: Colors.black, size: 24),
-              const SizedBox(width: 8),
-              const Text(
-                'Prayer Times',
-                style: TextStyle(
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.black,
-                ),
+        ),
+        // Dark overlay
+        Container(
+          decoration: BoxDecoration(
+            color: Colors.black.withOpacity(0.6),
+            borderRadius: BorderRadius.circular(16),
+          ),
+        ),
+        // Content
+        Container(
+          padding: const EdgeInsets.all(16),
+          decoration: BoxDecoration(
+            color: Colors.transparent,
+            borderRadius: BorderRadius.circular(16),
+            border: Border.all(color: AppColors.gold, width: 2),
+            boxShadow: [
+              BoxShadow(
+                color: AppColors.gold.withOpacity(0.3),
+                blurRadius: 8,
+                offset: const Offset(0, 2),
               ),
-              const SizedBox(width: 8),
-              Icon(Icons.chevron_left, color: Colors.black, size: 24),
             ],
           ),
-          const SizedBox(height: 16),
-          ...prayers.map((prayer) => _buildPrayerItem(context, prayer)),
-        ],
-      ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(Icons.chevron_right, color: AppColors.gold, size: 24),
+                  const SizedBox(width: 8),
+                  const Text(
+                    'Prayer Times',
+                    style: TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white,
+                    ),
+                  ),
+                  const SizedBox(width: 8),
+                  Icon(Icons.chevron_left, color: AppColors.gold, size: 24),
+                ],
+              ),
+              const SizedBox(height: 16),
+              ...prayers.map((prayer) => _buildPrayerItem(context, prayer)),
+            ],
+          ),
+        ),
+      ],
     );
   }
 
@@ -64,7 +91,7 @@ class PrayerCard extends StatelessWidget {
                   style: const TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.bold,
-                    color: Colors.black,
+                    color: Colors.white,
                   ),
                 ),
                 const SizedBox(height: 2),
@@ -72,7 +99,7 @@ class PrayerCard extends StatelessWidget {
                   prayer.name,
                   style: const TextStyle(
                     fontSize: 14,
-                    color: Colors.black87,
+                    color: Colors.white70,
                   ),
                 ),
               ],
@@ -81,8 +108,9 @@ class PrayerCard extends StatelessWidget {
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
             decoration: BoxDecoration(
-              color: Colors.black,
+              color: AppColors.gold.withOpacity(0.3),
               borderRadius: BorderRadius.circular(8),
+              border: Border.all(color: AppColors.gold),
             ),
             child: Text(
               prayer.time,
