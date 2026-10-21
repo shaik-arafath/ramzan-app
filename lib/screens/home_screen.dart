@@ -28,6 +28,8 @@ import '../widgets/prayer_card.dart';
 
 import '../widgets/quran_progress_card.dart';
 
+import 'masjid_list_screen.dart';
+
 import '../widgets/zikr_card.dart';
 
 import '../widgets/sunnah_card.dart';
@@ -1505,6 +1507,49 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
 
 
 
+  Widget _buildMasjidIcon() {
+
+    return Container(
+
+      width: 45,
+      height: 45,
+
+      decoration: BoxDecoration(
+
+        shape: BoxShape.circle,
+
+        color: AppColors.gold.withOpacity(0.2),
+
+        border: Border.all(color: AppColors.gold, width: 2),
+
+      ),
+
+      child: InkWell(
+
+        onTap: () {
+
+          Navigator.push(
+
+            context,
+
+            MaterialPageRoute(builder: (context) => const MasjidListScreen()),
+
+          );
+
+        },
+
+        borderRadius: BorderRadius.circular(22.5),
+
+        child: const Icon(Icons.mosque, color: AppColors.gold, size: 24),
+
+      ),
+
+    );
+
+  }
+
+
+
   void _showShopSelectionDialog() {
 
     showDialog(
@@ -2014,6 +2059,10 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
                       children: [
 
                         _buildShopIcon(),
+
+                        const SizedBox(width: 12),
+
+                        _buildMasjidIcon(),
 
                         const SizedBox(width: 12),
 
