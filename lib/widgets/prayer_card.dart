@@ -9,46 +9,47 @@ class PrayerCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Stack(
-      children: [
-        // Background image
-        ClipRRect(
-          borderRadius: BorderRadius.circular(16),
-          child: Image.asset(
-            'assets/7e789cf542209fc49a5582b23347764d.jpg',
-            fit: BoxFit.cover,
-            width: double.infinity,
-            height: double.infinity,
-            errorBuilder: (context, error, stackTrace) {
-              return Container(
-                color: AppColors.gold,
-              );
-            },
+    return Container(
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: AppColors.gold, width: 2),
+        boxShadow: [
+          BoxShadow(
+            color: AppColors.gold.withOpacity(0.3),
+            blurRadius: 8,
+            offset: const Offset(0, 2),
           ),
-        ),
-        // Dark overlay
-        Container(
-          decoration: BoxDecoration(
-            color: Colors.black.withOpacity(0.6),
-            borderRadius: BorderRadius.circular(16),
-          ),
-        ),
-        // Content
-        Container(
-          padding: const EdgeInsets.all(16),
-          decoration: BoxDecoration(
-            color: Colors.transparent,
-            borderRadius: BorderRadius.circular(16),
-            border: Border.all(color: AppColors.gold, width: 2),
-            boxShadow: [
-              BoxShadow(
-                color: AppColors.gold.withOpacity(0.3),
-                blurRadius: 8,
-                offset: const Offset(0, 2),
+        ],
+      ),
+      child: Stack(
+        children: [
+          // Background image
+          Positioned.fill(
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(16),
+              child: Image.asset(
+                'assets/7e789cf542209fc49a5582b23347764d.jpg',
+                fit: BoxFit.cover,
+                errorBuilder: (context, error, stackTrace) {
+                  return Container(
+                    color: AppColors.gold,
+                  );
+                },
               ),
-            ],
+            ),
           ),
-          child: Column(
+          // Dark overlay
+          Positioned.fill(
+            child: Container(
+              decoration: BoxDecoration(
+                color: Colors.black.withOpacity(0.6),
+                borderRadius: BorderRadius.circular(16),
+              ),
+            ),
+          ),
+          // Content
+          Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Row(
@@ -72,8 +73,8 @@ class PrayerCard extends StatelessWidget {
               ...prayers.map((prayer) => _buildPrayerItem(context, prayer)),
             ],
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 
