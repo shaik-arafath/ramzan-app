@@ -5,6 +5,7 @@ import '../models/masjid.dart';
 import '../services/masjid_service.dart';
 import '../theme/app_colors.dart';
 import 'masjid_detail_screen.dart';
+import 'add_masjid_screen.dart';
 
 class MasjidListScreen extends StatefulWidget {
   const MasjidListScreen({super.key});
@@ -154,6 +155,19 @@ class _MasjidListScreenState extends State<MasjidListScreen> {
               onPressed: _showAllMasjids,
               tooltip: 'Show All Masjids',
             ),
+          IconButton(
+            icon: const Icon(Icons.add),
+            onPressed: () async {
+              final result = await Navigator.push(
+                context,
+                MaterialPageRoute(builder: (_) => const AddMasjidScreen()),
+              );
+              if (result == true) {
+                _loadMasjids();
+              }
+            },
+            tooltip: 'Add Masjid',
+          ),
         ],
       ),
       body: Column(
