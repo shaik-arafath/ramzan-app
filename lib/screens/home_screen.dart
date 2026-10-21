@@ -1172,14 +1172,11 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
 
             ),
 
-            child: const Icon(
-
-              Icons.notifications,
-
-              color: Colors.white,
-
-              size: 20,
-
+            child: Image.asset(
+              'assets/eeb232de024d77f9de9b0b4dfc96c3bf.jpg',
+              width: 20,
+              height: 20,
+              fit: BoxFit.cover,
             ),
 
           ),
@@ -1540,7 +1537,13 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
 
         borderRadius: BorderRadius.circular(22.5),
 
-        child: const Icon(Icons.mosque, color: AppColors.gold, size: 24),
+        child: Padding(
+          padding: const EdgeInsets.all(8),
+          child: Image.asset(
+            'assets/d62aa914187bb01b0f7053eae30ff6d1.jpg',
+            fit: BoxFit.cover,
+          ),
+        ),
 
       ),
 
