@@ -2217,9 +2217,9 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
 
       decoration: BoxDecoration(
 
-        color: AppColors.darkBlack,
-
         borderRadius: BorderRadius.circular(16),
+
+        border: Border.all(color: AppColors.gold.withOpacity(0.3), width: 1),
 
         boxShadow: [
 
@@ -2233,54 +2233,31 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
 
         children: [
 
-          // Subtle landscape
-
-          Positioned(
-
-            bottom: 0,
-
-            left: 0,
-
-            right: 0,
-
-            child: Row(
-
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-
-              children: [
-
-                Icon(Icons.landscape, color: AppColors.lightBlack.withOpacity(0.5), size: 40),
-
-                Icon(Icons.nightlight_round, color: AppColors.gold.withOpacity(0.4), size: 24),
-
-                Icon(Icons.landscape, color: AppColors.lightBlack.withOpacity(0.5), size: 40),
-
-              ],
-
+          // Background image
+          Positioned.fill(
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(16),
+              child: Image.asset(
+                'assets/7e789cf542209fc49a5582b23347764d.jpg',
+                fit: BoxFit.cover,
+                errorBuilder: (context, error, stackTrace) {
+                  return Container(
+                    color: AppColors.darkBlack,
+                  );
+                },
+              ),
             ),
-
           ),
-
-          // Right-side decorative image for next prayer
-
-          Positioned(
-
-            right: 0,
-
-            bottom: 0,
-
-            child: Image.asset(
-
-              'assets/icons/1.png',
-
-              height: 90,
-
-              fit: BoxFit.contain,
-
+          // Dark overlay
+          Positioned.fill(
+            child: Container(
+              decoration: BoxDecoration(
+                color: Colors.black.withOpacity(0.6),
+                borderRadius: BorderRadius.circular(16),
+              ),
             ),
-
           ),
-
+          // Content
           Column(
 
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -2385,13 +2362,13 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
 
                 decoration: BoxDecoration(
 
-                  color: AppColors.gold,
-
+                  color: AppColors.gold.withOpacity(0.3),
                   borderRadius: BorderRadius.circular(8),
+                  border: Border.all(color: AppColors.gold),
 
                 ),
 
-                child: const Text('Adhan Reminder', style: TextStyle(color: Colors.black, fontSize: 14, fontWeight: FontWeight.w700)),
+                child: const Text('Adhan Reminder', style: TextStyle(color: AppColors.gold, fontSize: 14, fontWeight: FontWeight.w700)),
 
               ),
 
