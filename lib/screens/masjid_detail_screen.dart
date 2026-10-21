@@ -223,69 +223,96 @@ class _MasjidDetailScreenState extends State<MasjidDetailScreen> {
   }
 
   Widget _buildNamazTimingsCard() {
-    return Container(
-      padding: const EdgeInsets.all(20),
-      decoration: BoxDecoration(
-        color: AppColors.mediumBlack,
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: AppColors.gold.withOpacity(0.3), width: 1),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const Row(
-            children: [
-              Icon(Icons.access_time, color: AppColors.gold),
-              SizedBox(width: 8),
-              Text(
-                'Namaz Timings',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-            ],
+    return Stack(
+      children: [
+        // Background image
+        ClipRRect(
+          borderRadius: BorderRadius.circular(16),
+          child: Image.asset(
+            'assets/7e789cf542209fc49a5582b23347764d.jpg',
+            fit: BoxFit.cover,
+            width: double.infinity,
+            height: double.infinity,
+            errorBuilder: (context, error, stackTrace) {
+              return Container(
+                color: AppColors.mediumBlack,
+              );
+            },
           ),
-          const SizedBox(height: 16),
-          _buildTimingRow('Fajr', widget.masjid.fajrTime),
-          _buildTimingRow('Dhuhr', widget.masjid.dhuhrTime),
-          _buildTimingRow('Asr', widget.masjid.asrTime),
-          _buildTimingRow('Maghrib', widget.masjid.maghribTime),
-          _buildTimingRow('Isha', widget.masjid.ishaTime),
-          if (widget.masjid.jummahTime != null) ...[
-            const SizedBox(height: 8),
-            Container(
-              padding: const EdgeInsets.all(12),
-              decoration: BoxDecoration(
-                color: AppColors.gold.withOpacity(0.2),
-                borderRadius: BorderRadius.circular(8),
-              ),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        ),
+        // Dark overlay
+        Container(
+          decoration: BoxDecoration(
+            color: Colors.black.withOpacity(0.7),
+            borderRadius: BorderRadius.circular(16),
+          ),
+        ),
+        // Content
+        Container(
+          padding: const EdgeInsets.all(20),
+          decoration: BoxDecoration(
+            color: Colors.transparent,
+            borderRadius: BorderRadius.circular(16),
+            border: Border.all(color: AppColors.gold.withOpacity(0.3), width: 1),
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const Row(
                 children: [
-                  const Text(
-                    'Jummah',
-                    style: TextStyle(
-                      color: AppColors.gold,
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
+                  Icon(Icons.access_time, color: AppColors.gold),
+                  SizedBox(width: 8),
                   Text(
-                    widget.masjid.jummahTime!,
-                    style: const TextStyle(
+                    'Namaz Timings',
+                    style: TextStyle(
                       color: Colors.white,
-                      fontSize: 16,
+                      fontSize: 18,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
                 ],
               ),
-            ),
-          ],
-        ],
-      ),
+              const SizedBox(height: 16),
+              _buildTimingRow('Fajr', widget.masjid.fajrTime),
+              _buildTimingRow('Dhuhr', widget.masjid.dhuhrTime),
+              _buildTimingRow('Asr', widget.masjid.asrTime),
+              _buildTimingRow('Maghrib', widget.masjid.maghribTime),
+              _buildTimingRow('Isha', widget.masjid.ishaTime),
+              if (widget.masjid.jummahTime != null) ...[
+                const SizedBox(height: 8),
+                Container(
+                  padding: const EdgeInsets.all(12),
+                  decoration: BoxDecoration(
+                    color: AppColors.gold.withOpacity(0.2),
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      const Text(
+                        'Jummah',
+                        style: TextStyle(
+                          color: AppColors.gold,
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      Text(
+                        widget.masjid.jummahTime!,
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ],
+          ),
+        ),
+      ],
     );
   }
 
