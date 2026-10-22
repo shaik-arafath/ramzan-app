@@ -48,6 +48,8 @@ import 'qibla_finder_screen.dart';
 
 import 'tasbeeh_counter_screen.dart';
 
+import 'wazifa_list_screen.dart';
+
 import 'islamic_calendar_screen.dart';
 
 import 'daily_goals_screen.dart';
@@ -2401,6 +2403,8 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
 
       ('Tasbeeh Counter', 'assets/icons/6.png', null),
 
+      ('Wazifa', null, Icons.auto_awesome),
+
       ('Islamic Calendar', null, Icons.calendar_month),
 
       ('Bayans', 'assets/icons/2.jpg', null),
@@ -2482,6 +2486,12 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
         case 'Tasbeeh Counter':
 
           page = const TasbeehCounterScreen();
+
+          break;
+
+        case 'Wazifa':
+
+          page = const WazifaListScreen();
 
           break;
 
