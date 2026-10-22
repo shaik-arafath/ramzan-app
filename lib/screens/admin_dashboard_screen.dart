@@ -6,6 +6,7 @@ import 'admin_products_screen.dart';
 import 'admin_offers_screen.dart';
 import 'admin_posts_screen.dart';
 import 'admin_orders_screen.dart';
+import 'admin_wazifas_screen.dart';
 
 class AdminDashboardScreen extends StatefulWidget {
   const AdminDashboardScreen({super.key});
@@ -21,6 +22,7 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
     const AdminOffersScreen(),
     const AdminPostsScreen(),
     const AdminOrdersScreen(),
+    const AdminWazifasScreen(),
   ];
 
   @override
@@ -63,6 +65,10 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
             BottomNavigationBarItem(
               icon: Icon(Icons.receipt_long_outlined),
               label: 'Orders',
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.auto_awesome_outlined),
+              label: 'Wazifas',
             ),
           ],
         ),

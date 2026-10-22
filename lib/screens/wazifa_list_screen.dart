@@ -3,7 +3,6 @@ import '../models/wazifa.dart';
 import '../services/wazifa_service.dart';
 import '../theme/app_colors.dart';
 import 'wazifa_detail_screen.dart';
-import 'add_wazifa_screen.dart';
 
 class WazifaListScreen extends StatefulWidget {
   const WazifaListScreen({super.key});
@@ -94,21 +93,6 @@ class _WazifaListScreenState extends State<WazifaListScreen> {
           style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
         ),
         iconTheme: const IconThemeData(color: Colors.white),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.add),
-            onPressed: () async {
-              final result = await Navigator.push(
-                context,
-                MaterialPageRoute(builder: (_) => const AddWazifaScreen()),
-              );
-              if (result == true) {
-                _loadWazifas();
-              }
-            },
-            tooltip: 'Add Wazifa',
-          ),
-        ],
       ),
       body: _isLoading
           ? const Center(child: CircularProgressIndicator(color: AppColors.gold))

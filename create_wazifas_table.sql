@@ -21,21 +21,37 @@ CREATE POLICY "Allow read access to all users"
     ON wazifas FOR SELECT
     USING (true);
 
--- Allow authenticated users to insert wazifas (admin functionality)
-CREATE POLICY "Allow insert for authenticated users"
+-- Allow only admin users to insert wazifas
+CREATE POLICY "Allow insert for admin only"
     ON wazifas FOR INSERT
-    WITH CHECK (auth.role() = 'authenticated');
+    WITH CHECK (
+      auth.uid() IN (
+        SELECT id FROM auth.users WHERE raw_user_meta_data->>'is_admin' = 'true'
+      )
+    );
 
--- Allow authenticated users to update wazifas (admin functionality)
-CREATE POLICY "Allow update for authenticated users"
+-- Allow only admin users to update wazifas
+CREATE POLICY "Allow update for admin only"
     ON wazifas FOR UPDATE
-    USING (auth.role() = 'authenticated')
-    WITH CHECK (auth.role() = 'authenticated');
+    USING (
+      auth.uid() IN (
+        SELECT id FROM auth.users WHERE raw_user_meta_data->>'is_admin' = 'true'
+      )
+    )
+    WITH CHECK (
+      auth.uid() IN (
+        SELECT id FROM auth.users WHERE raw_user_meta_data->>'is_admin' = 'true'
+      )
+    );
 
--- Allow authenticated users to delete wazifas (admin functionality)
-CREATE POLICY "Allow delete for authenticated users"
+-- Allow only admin users to delete wazifas
+CREATE POLICY "Allow delete for admin only"
     ON wazifas FOR DELETE
-    USING (auth.role() = 'authenticated');
+    USING (
+      auth.uid() IN (
+        SELECT id FROM auth.users WHERE raw_user_meta_data->>'is_admin' = 'true'
+      )
+    );
 
 -- Create index on category for faster filtering
 CREATE INDEX IF NOT EXISTS idx_wazifas_category ON wazifas(category);
