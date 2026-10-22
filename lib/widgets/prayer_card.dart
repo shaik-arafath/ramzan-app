@@ -9,25 +9,25 @@ class PrayerCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: AppColors.gold, width: 2),
-        boxShadow: [
-          BoxShadow(
-            color: AppColors.gold.withOpacity(0.3),
-            blurRadius: 8,
-            offset: const Offset(0, 2),
-          ),
-        ],
-      ),
-      child: Stack(
-        children: [
-          // Background image
-          Positioned.fill(
-            child: ClipRRect(
-              borderRadius: BorderRadius.circular(16),
+    return SizedBox(
+      width: double.infinity,
+      child: Container(
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(16),
+          border: Border.all(color: AppColors.gold, width: 2),
+          boxShadow: [
+            BoxShadow(
+              color: AppColors.gold.withOpacity(0.3),
+              blurRadius: 8,
+              offset: const Offset(0, 2),
+            ),
+          ],
+        ),
+        clipBehavior: Clip.antiAlias,
+        child: Stack(
+          children: [
+            // Background image
+            Positioned.fill(
               child: Image.asset(
                 'assets/7e789cf542209fc49a5582b23347764d.jpg',
                 fit: BoxFit.cover,
@@ -38,42 +38,42 @@ class PrayerCard extends StatelessWidget {
                 },
               ),
             ),
-          ),
-          // Dark overlay
-          Positioned.fill(
-            child: Container(
-              decoration: BoxDecoration(
+            // Dark overlay
+            Positioned.fill(
+              child: Container(
                 color: Colors.black.withOpacity(0.6),
-                borderRadius: BorderRadius.circular(16),
               ),
             ),
-          ),
-          // Content
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
+            // Content
+            Padding(
+              padding: const EdgeInsets.all(16),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Icon(Icons.chevron_right, color: AppColors.gold, size: 24),
-                  const SizedBox(width: 8),
-                  const Text(
-                    'Prayer Times',
-                    style: TextStyle(
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.white,
-                    ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(Icons.chevron_right, color: AppColors.gold, size: 24),
+                      const SizedBox(width: 8),
+                      const Text(
+                        'Prayer Times',
+                        style: TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white,
+                        ),
+                      ),
+                      const SizedBox(width: 8),
+                      Icon(Icons.chevron_left, color: AppColors.gold, size: 24),
+                    ],
                   ),
-                  const SizedBox(width: 8),
-                  Icon(Icons.chevron_left, color: AppColors.gold, size: 24),
+                  const SizedBox(height: 16),
+                  ...prayers.map((prayer) => _buildPrayerItem(context, prayer)),
                 ],
               ),
-              const SizedBox(height: 16),
-              ...prayers.map((prayer) => _buildPrayerItem(context, prayer)),
-            ],
-          ),
-        ],
+            ),
+          ],
+        ),
       ),
     );
   }

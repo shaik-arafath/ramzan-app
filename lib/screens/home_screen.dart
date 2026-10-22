@@ -2211,32 +2211,31 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
 
 
 
-    return Container(
+    return SizedBox(
+      width: double.infinity,
+      child: Container(
 
-      padding: const EdgeInsets.all(20),
+        decoration: BoxDecoration(
 
-      decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(16),
 
-        borderRadius: BorderRadius.circular(16),
+          border: Border.all(color: AppColors.gold.withOpacity(0.3), width: 1),
 
-        border: Border.all(color: AppColors.gold.withOpacity(0.3), width: 1),
+          boxShadow: [
 
-        boxShadow: [
+            BoxShadow(color: Colors.black.withOpacity(0.3), blurRadius: 8, offset: const Offset(0, 4)),
 
-          BoxShadow(color: Colors.black.withOpacity(0.3), blurRadius: 8, offset: const Offset(0, 4)),
+          ],
 
-        ],
+        ),
 
-      ),
+        clipBehavior: Clip.antiAlias,
+        child: Stack(
 
-      child: Stack(
+          children: [
 
-        children: [
-
-          // Background image
-          Positioned.fill(
-            child: ClipRRect(
-              borderRadius: BorderRadius.circular(16),
+            // Background image
+            Positioned.fill(
               child: Image.asset(
                 'assets/7e789cf542209fc49a5582b23347764d.jpg',
                 fit: BoxFit.cover,
@@ -2247,139 +2246,139 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
                 },
               ),
             ),
-          ),
-          // Dark overlay
-          Positioned.fill(
-            child: Container(
-              decoration: BoxDecoration(
+            // Dark overlay
+            Positioned.fill(
+              child: Container(
                 color: Colors.black.withOpacity(0.6),
-                borderRadius: BorderRadius.circular(16),
               ),
             ),
-          ),
-          // Content
-          Column(
+            // Content
+            Padding(
+              padding: const EdgeInsets.all(20),
+              child: Column(
 
-            crossAxisAlignment: CrossAxisAlignment.start,
-
-            children: [
-
-              Row(
-
-                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.start,
 
                 children: [
 
-                  _goldSeparator(),
+                  Row(
 
-                  const SizedBox(width: 8),
+                    mainAxisAlignment: MainAxisAlignment.center,
 
-                  const Text('Next Prayer', style: TextStyle(color: AppColors.white, fontSize: 14, fontWeight: FontWeight.w600)),
+                    children: [
 
-                  const SizedBox(width: 8),
+                      _goldSeparator(),
 
-                  _goldSeparator(),
+                      const SizedBox(width: 8),
+
+                      const Text('Next Prayer', style: TextStyle(color: AppColors.white, fontSize: 14, fontWeight: FontWeight.w600)),
+
+                      const SizedBox(width: 8),
+
+                      _goldSeparator(),
+
+                    ],
+
+                  ),
+
+                  const SizedBox(height: 16),
+
+                  SizedBox(
+
+                    height: 80,
+
+                    child: PageView.builder(
+
+                      controller: _prayerPageController,
+
+                      onPageChanged: (index) {
+
+                        _prayerPageIndex = index;
+
+                      },
+
+                      itemCount: _todayData!.prayers.length,
+
+                      itemBuilder: (context, index) {
+
+                        final prayer = _todayData!.prayers[index];
+
+                        return Column(
+
+                          crossAxisAlignment: CrossAxisAlignment.start,
+
+                          children: [
+
+                            Text(
+
+                              prayer.name,
+
+                              style: const TextStyle(
+
+                                fontSize: 32,
+
+                                fontWeight: FontWeight.bold,
+
+                                color: AppColors.white,
+
+                              ),
+
+                            ),
+
+                            const SizedBox(height: 8),
+
+                            Text(
+
+                              _to12Hour(_getEffectivePrayerTime(prayer)),
+
+                              style: const TextStyle(
+
+                                fontSize: 18,
+
+                                color: AppColors.white70,
+
+                              ),
+
+                            ),
+
+                          ],
+
+                        );
+
+                      },
+
+                    ),
+
+                  ),
+
+                  const SizedBox(height: 12),
+
+                  Container(
+
+                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+
+                    decoration: BoxDecoration(
+
+                      color: AppColors.gold.withOpacity(0.3),
+                      borderRadius: BorderRadius.circular(8),
+                      border: Border.all(color: AppColors.gold),
+
+                    ),
+
+                    child: const Text('Adhan Reminder', style: TextStyle(color: AppColors.gold, fontSize: 14, fontWeight: FontWeight.w700)),
+
+                  ),
 
                 ],
 
               ),
+            ),
 
-              const SizedBox(height: 16),
+          ],
 
-              SizedBox(
-
-                height: 80,
-
-                child: PageView.builder(
-
-                  controller: _prayerPageController,
-
-                  onPageChanged: (index) {
-
-                    _prayerPageIndex = index;
-
-                  },
-
-                  itemCount: _todayData!.prayers.length,
-
-                  itemBuilder: (context, index) {
-
-                    final prayer = _todayData!.prayers[index];
-
-                    return Column(
-
-                      crossAxisAlignment: CrossAxisAlignment.start,
-
-                      children: [
-
-                        Text(
-
-                          prayer.name,
-
-                          style: const TextStyle(
-
-                            fontSize: 32,
-
-                            fontWeight: FontWeight.bold,
-
-                            color: AppColors.white,
-
-                          ),
-
-                        ),
-
-                        const SizedBox(height: 8),
-
-                        Text(
-
-                          _to12Hour(_getEffectivePrayerTime(prayer)),
-
-                          style: const TextStyle(
-
-                            fontSize: 18,
-
-                            color: AppColors.white70,
-
-                          ),
-
-                        ),
-
-                      ],
-
-                    );
-
-                  },
-
-                ),
-
-              ),
-
-              const SizedBox(height: 12),
-
-              Container(
-
-                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-
-                decoration: BoxDecoration(
-
-                  color: AppColors.gold.withOpacity(0.3),
-                  borderRadius: BorderRadius.circular(8),
-                  border: Border.all(color: AppColors.gold),
-
-                ),
-
-                child: const Text('Adhan Reminder', style: TextStyle(color: AppColors.gold, fontSize: 14, fontWeight: FontWeight.w700)),
-
-              ),
-
-            ],
-
-          ),
-
-        ],
+        ),
 
       ),
-
     );
 
   }
@@ -2400,13 +2399,11 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
 
       ('Qibla Finder', 'assets/icons/pngwing.com (5).png', null),
 
-      ('Tasbeeh Counter', 'assets/icons/download.jpg', null),
+      ('Tasbeeh Counter', 'assets/icons/6.png', null),
 
       ('Islamic Calendar', null, Icons.calendar_month),
 
       ('Bayans', 'assets/icons/2.jpg', null),
-
-      ('My Orders', null, Icons.shopping_bag),
 
     ];
 
@@ -2500,11 +2497,6 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
 
           break;
 
-        case 'My Orders':
-
-          page = const OrdersScreen();
-
-          break;
 
         default:
 
@@ -2528,15 +2520,11 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
 
     if (assetPath != null) {
 
-      // Make image fill most of the card area
+      // Make image fill the entire card area
+      iconWidget = Expanded(
+        child: ClipRRect(
 
-      iconWidget = ClipRRect(
-
-        borderRadius: BorderRadius.circular(10),
-
-        child: AspectRatio(
-
-          aspectRatio: 1,
+          borderRadius: BorderRadius.circular(10),
 
           child: Image.asset(
 
@@ -2544,16 +2532,22 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
 
             fit: BoxFit.cover,
 
+            width: double.infinity,
+
+            height: double.infinity,
+
           ),
 
         ),
-
       );
 
     } else {
 
-      iconWidget = Icon(icon, color: AppColors.gold, size: 40);
-
+      iconWidget = Expanded(
+        child: Center(
+          child: Icon(icon, color: AppColors.gold, size: 40),
+        ),
+      );
     }
 
 
@@ -2566,7 +2560,8 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
 
       child: Container(
 
-          padding: const EdgeInsets.all(16),
+          height: 120,
+          padding: const EdgeInsets.all(8),
 
           decoration: BoxDecoration(
 
@@ -2585,8 +2580,6 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
           ),
 
           child: Column(
-
-            mainAxisSize: MainAxisSize.min,
 
             crossAxisAlignment: CrossAxisAlignment.stretch,
 
@@ -2620,7 +2613,9 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
 
             ],
 
-          )),
+          ),
+
+      ),
 
     );
 
