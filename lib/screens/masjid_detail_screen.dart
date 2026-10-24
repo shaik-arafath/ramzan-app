@@ -646,32 +646,33 @@ class _MasjidDetailScreenState extends State<MasjidDetailScreen> {
   Future<void> _openInGoogleMaps() async {
     final lat = widget.masjid.latitude;
     final lng = widget.masjid.longitude;
-    final url = 'https://www.google.com/maps/search/?api=1&query=$lat,$lng';
     
-    try {
-      if (await canLaunchUrl(Uri.parse(url))) {
-        final launched = await launchUrl(
-          Uri.parse(url),
-          mode: LaunchMode.externalApplication,
-        );
-        if (!launched && mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Could not launch Google Maps')),
+    // Try multiple URL formats
+    final urls = [
+      'https://www.google.com/maps/search/?api=1&query=$lat,$lng',
+      'geo:$lat,$lng?q=$lat,$lng',
+      'https://maps.google.com/?q=$lat,$lng',
+    ];
+    
+    for (final url in urls) {
+      try {
+        if (await canLaunchUrl(Uri.parse(url))) {
+          final launched = await launchUrl(
+            Uri.parse(url),
+            mode: LaunchMode.externalApplication,
           );
+          if (launched) return;
         }
-      } else {
-        if (mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Google Maps not available')),
-          );
-        }
+      } catch (e) {
+        print('Error launching $url: $e');
+        continue;
       }
-    } catch (e) {
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Error: $e')),
-        );
-      }
+    }
+    
+    if (mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Could not open Google Maps. Please install Google Maps app.')),
+      );
     }
   }
 }
