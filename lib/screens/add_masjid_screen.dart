@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 import '../models/masjid.dart';
 import '../services/masjid_service.dart';
 import '../theme/app_colors.dart';
@@ -125,6 +126,19 @@ class _AddMasjidScreenState extends State<AddMasjidScreen> {
     setState(() => _isSubmitting = true);
 
     try {
+      // Check if user is authenticated
+      final user = Supabase.instance.client.auth.currentUser;
+      if (user == null) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Please login to add a masjid'),
+            backgroundColor: Colors.red,
+          ),
+        );
+        setState(() => _isSubmitting = false);
+        return;
+      }
+
       final masjid = Masjid(
         id: '',
         name: _nameController.text.trim(),

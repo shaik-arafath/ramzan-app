@@ -38,12 +38,14 @@ class _MasjidListScreenState extends State<MasjidListScreen> {
     setState(() => _isLoading = true);
     try {
       final masjids = await _masjidService.fetchAllMasjids();
+      print('Loaded ${masjids.length} masjids');
       setState(() {
         _allMasjids = masjids;
         _filteredMasjids = masjids;
         _isLoading = false;
       });
     } catch (e) {
+      print('Error loading masjids: $e');
       setState(() {
         _errorMessage = 'Error loading masjids: $e';
         _isLoading = false;

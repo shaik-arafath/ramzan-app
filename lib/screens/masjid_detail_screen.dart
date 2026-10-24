@@ -284,11 +284,28 @@ class _MasjidDetailScreenState extends State<MasjidDetailScreen> {
                 ],
               ),
               const SizedBox(height: 16),
-              _buildTimingRow('Fajr', widget.masjid.fajrTime),
-              _buildTimingRow('Dhuhr', widget.masjid.dhuhrTime),
-              _buildTimingRow('Asr', widget.masjid.asrTime),
-              _buildTimingRow('Maghrib', widget.masjid.maghribTime),
-              _buildTimingRow('Isha', widget.masjid.ishaTime),
+              if (widget.masjid.fajrTime == null &&
+                  widget.masjid.dhuhrTime == null &&
+                  widget.masjid.asrTime == null &&
+                  widget.masjid.maghribTime == null &&
+                  widget.masjid.ishaTime == null) ...[
+                const Center(
+                  child: Padding(
+                    padding: EdgeInsets.all(16),
+                    child: Text(
+                      'Namaz timings not available for this masjid',
+                      style: TextStyle(color: Colors.grey),
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
+                ),
+              ] else ...[
+                _buildTimingRow('Fajr', widget.masjid.fajrTime),
+                _buildTimingRow('Dhuhr', widget.masjid.dhuhrTime),
+                _buildTimingRow('Asr', widget.masjid.asrTime),
+                _buildTimingRow('Maghrib', widget.masjid.maghribTime),
+                _buildTimingRow('Isha', widget.masjid.ishaTime),
+              ],
               if (widget.masjid.jummahTime != null) ...[
                 const SizedBox(height: 8),
                 Container(
@@ -480,9 +497,9 @@ class _MasjidDetailScreenState extends State<MasjidDetailScreen> {
       context: context,
       builder: (context) => AlertDialog(
         backgroundColor: AppColors.mediumBlack,
-        title: const Text(
+        title: Text(
           'Send Message to ${widget.masjid.name}',
-          style: TextStyle(color: Colors.white),
+          style: const TextStyle(color: Colors.white),
         ),
         content: TextField(
           controller: messageController,
