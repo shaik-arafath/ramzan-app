@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:url_launcher/url_launcher.dart';
 import '../models/masjid.dart';
 import '../theme/app_colors.dart';
 
@@ -166,6 +167,16 @@ class _MasjidDetailScreenState extends State<MasjidDetailScreen> {
                       }).toList(),
                     ),
                   ],
+
+                  const SizedBox(height: 24),
+
+                  // Send Message
+                  _buildMessageCard(),
+
+                  const SizedBox(height: 24),
+
+                  // Map and Directions
+                  _buildMapCard(),
 
                   const SizedBox(height: 24),
 
@@ -411,5 +422,233 @@ class _MasjidDetailScreenState extends State<MasjidDetailScreen> {
         ],
       ),
     );
+  }
+
+  Widget _buildMessageCard() {
+    return Container(
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: AppColors.mediumBlack,
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: AppColors.gold.withOpacity(0.3), width: 1),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const Row(
+            children: [
+              Icon(Icons.message, color: AppColors.gold),
+              SizedBox(width: 8),
+              Text(
+                'Send Message',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 16),
+          SizedBox(
+            width: double.infinity,
+            child: ElevatedButton.icon(
+              onPressed: _sendMessage,
+              icon: const Icon(Icons.send, color: Colors.black),
+              label: const Text(
+                'Contact Masjid',
+                style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
+              ),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: AppColors.gold,
+                padding: const EdgeInsets.symmetric(vertical: 12),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8),
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Future<void> _sendMessage() async {
+    final messageController = TextEditingController();
+    
+    final message = await showDialog<String>(
+      context: context,
+      builder: (context) => AlertDialog(
+        backgroundColor: AppColors.mediumBlack,
+        title: const Text(
+          'Send Message to ${widget.masjid.name}',
+          style: TextStyle(color: Colors.white),
+        ),
+        content: TextField(
+          controller: messageController,
+          style: const TextStyle(color: Colors.white),
+          decoration: InputDecoration(
+            hintText: 'Type your message...',
+            hintStyle: const TextStyle(color: Colors.grey),
+            filled: true,
+            fillColor: AppColors.lightBlack,
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(8),
+              borderSide: BorderSide(color: AppColors.gold.withOpacity(0.3)),
+            ),
+          ),
+          maxLines: 4,
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('Cancel', style: TextStyle(color: AppColors.gold)),
+          ),
+          ElevatedButton(
+            onPressed: () => Navigator.pop(context, messageController.text),
+            style: ElevatedButton.styleFrom(backgroundColor: AppColors.gold),
+            child: const Text('Send', style: TextStyle(color: Colors.black)),
+          ),
+        ],
+      ),
+    );
+
+    if (message != null && message!.isNotEmpty) {
+      // For now, just show a success message
+      // In production, this would send the message via WhatsApp or email
+      if (widget.masjid.phone != null) {
+        final whatsappUrl = 'https://wa.me/${widget.masjid!.phone!.replaceAll(RegExp(r'[^\d]'), '')}?text=${Uri.encodeComponent(message!)}';
+        if (await canLaunchUrl(Uri.parse(whatsappUrl))) {
+          await launchUrl(Uri.parse(whatsappUrl), mode: LaunchMode.externalApplication);
+        }
+      } else {
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Message sent! (Demo mode)')),
+          );
+        }
+      }
+    }
+    
+    messageController.dispose();
+  }
+
+  Widget _buildMapCard() {
+    return Container(
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: AppColors.mediumBlack,
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: AppColors.gold.withOpacity(0.3), width: 1),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const Row(
+            children: [
+              Icon(Icons.map, color: AppColors.gold),
+              SizedBox(width: 8),
+              Text(
+                'Location & Directions',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 16),
+          Container(
+            height: 200,
+            width: double.infinity,
+            decoration: BoxDecoration(
+              color: AppColors.lightBlack,
+              borderRadius: BorderRadius.circular(12),
+            ),
+            child: Stack(
+              children: [
+                // Placeholder for map
+                Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(
+                        Icons.map_outlined,
+                        size: 60,
+                        color: AppColors.gold.withOpacity(0.5),
+                      ),
+                      const SizedBox(height: 8),
+                      Text(
+                        widget.masjid.name,
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontSize: 14,
+                        ),
+                        textAlign: TextAlign.center,
+                      ),
+                      const SizedBox(height: 4),
+                      Text(
+                        '${widget.masjid.latitude.toStringAsFixed(4)}, ${widget.masjid.longitude.toStringAsFixed(4)}',
+                        style: const TextStyle(
+                          color: Colors.grey,
+                          fontSize: 12,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                // Open in Google Maps button
+                Positioned(
+                  bottom: 12,
+                  right: 12,
+                  child: FloatingActionButton.small(
+                    heroTag: 'open_map',
+                    backgroundColor: AppColors.gold,
+                    onPressed: _openInGoogleMaps,
+                    child: const Icon(Icons.directions, color: Colors.black),
+                  ),
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(height: 16),
+          SizedBox(
+            width: double.infinity,
+            child: ElevatedButton.icon(
+              onPressed: _openInGoogleMaps,
+              icon: const Icon(Icons.directions, color: Colors.black),
+              label: const Text(
+                'Get Directions',
+                style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
+              ),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: AppColors.gold,
+                padding: const EdgeInsets.symmetric(vertical: 12),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8),
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Future<void> _openInGoogleMaps() async {
+    final lat = widget.masjid.latitude;
+    final lng = widget.masjid.longitude;
+    final url = 'https://www.google.com/maps/dir/?api=1&destination=$lat,$lng';
+    
+    if (await canLaunchUrl(Uri.parse(url))) {
+      await launchUrl(Uri.parse(url), mode: LaunchMode.externalApplication);
+    } else {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Could not open Google Maps')),
+        );
+      }
+    }
   }
 }
