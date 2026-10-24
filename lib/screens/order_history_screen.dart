@@ -51,10 +51,28 @@ class _OrderHistoryScreenState extends State<OrderHistoryScreen> {
       case 'processing':
         return Colors.blue;
       case 'shipped':
+      case 'packed':
         return Colors.purple;
+      case 'out for delivery':
+        return Colors.teal;
       case 'delivered':
         return Colors.green;
       case 'cancelled':
+        return Colors.red;
+      case 'paid':
+        return Colors.green;
+      default:
+        return Colors.grey;
+    }
+  }
+
+  Color _getPaymentStatusColor(String status) {
+    switch (status.toLowerCase()) {
+      case 'paid':
+        return Colors.green;
+      case 'pending':
+        return Colors.orange;
+      case 'failed':
         return Colors.red;
       default:
         return Colors.grey;
@@ -118,6 +136,7 @@ class _OrderHistoryScreenState extends State<OrderHistoryScreen> {
   Widget _buildOrderCard(Map<String, dynamic> order) {
     final orderItems = order['items'] as List<dynamic>? ?? [];
     final status = order['order_status'] ?? 'pending';
+    final paymentStatus = order['payment_status'] ?? 'Pending';
     final totalAmount = order['total_amount']?.toStringAsFixed(2) ?? '0.00';
     final orderDate = order['created_at']?.toString().split('T')[0] ?? '';
 
@@ -146,9 +165,30 @@ class _OrderHistoryScreenState extends State<OrderHistoryScreen> {
               style: const TextStyle(color: Colors.grey),
             ),
             const SizedBox(height: 4),
-            Text(
-              '\$$totalAmount',
-              style: const TextStyle(color: Color(0xFFE8B931), fontWeight: FontWeight.bold),
+            Row(
+              children: [
+                Text(
+                  '\$$totalAmount',
+                  style: const TextStyle(color: Color(0xFFE8B931), fontWeight: FontWeight.bold),
+                ),
+                const SizedBox(width: 8),
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                  decoration: BoxDecoration(
+                    color: _getPaymentStatusColor(paymentStatus).withOpacity(0.2),
+                    borderRadius: BorderRadius.circular(8),
+                    border: Border.all(color: _getPaymentStatusColor(paymentStatus)),
+                  ),
+                  child: Text(
+                    paymentStatus.toUpperCase(),
+                    style: TextStyle(
+                      color: _getPaymentStatusColor(paymentStatus),
+                      fontSize: 10,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+              ],
             ),
           ],
         ),
@@ -223,6 +263,22 @@ class _OrderHistoryScreenState extends State<OrderHistoryScreen> {
                   );
                 }),
                 const SizedBox(height: 16),
+                if (order['phonepe_transaction_id'] != null)
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const Text(
+                        'PhonePe Transaction ID:',
+                        style: TextStyle(color: Color(0xFFE8B931), fontWeight: FontWeight.bold),
+                      ),
+                      const SizedBox(height: 4),
+                      Text(
+                        order['phonepe_transaction_id'],
+                        style: const TextStyle(color: Colors.white70),
+                      ),
+                      const SizedBox(height: 16),
+                    ],
+                  ),
                 if (order['shipping_address'] != null)
                   Builder(
                     builder: (context) {

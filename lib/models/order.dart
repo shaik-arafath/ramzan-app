@@ -16,6 +16,7 @@ class Order {
   final String? trackingStatus; // packed, out_for_delivery, delivered
   final String? currentLocation;
   final DateTime? estimatedDeliveryDate;
+  final String? phonePeTransactionId;
 
   Order({
     required this.id,
@@ -33,6 +34,7 @@ class Order {
     this.trackingStatus,
     this.currentLocation,
     this.estimatedDeliveryDate,
+    this.phonePeTransactionId,
   });
 
   factory Order.fromMap(Map<String, dynamic> map) {
@@ -97,6 +99,7 @@ class Order {
       estimatedDeliveryDate: map['estimated_delivery_date'] != null
           ? DateTime.tryParse(map['estimated_delivery_date'] as String)
           : null,
+      phonePeTransactionId: map['phonepe_transaction_id'] as String?,
     );
   }
 
@@ -115,6 +118,7 @@ class Order {
       'tracking_status': trackingStatus,
       'current_location': currentLocation,
       'estimated_delivery_date': estimatedDeliveryDate?.toIso8601String(),
+      'phonepe_transaction_id': phonePeTransactionId,
     };
 
     if (includeId && id.isNotEmpty) {
