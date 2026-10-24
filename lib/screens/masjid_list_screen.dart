@@ -465,12 +465,28 @@ class _MasjidListScreenState extends State<MasjidListScreen> {
     // Open Google Maps with nearby masjids search
     final url = 'https://www.google.com/maps/search/masjid+near+me/@$lat,$lng,14z';
     
-    if (await canLaunchUrl(Uri.parse(url))) {
-      await launchUrl(Uri.parse(url), mode: LaunchMode.externalApplication);
-    } else {
+    try {
+      if (await canLaunchUrl(Uri.parse(url))) {
+        final launched = await launchUrl(
+          Uri.parse(url),
+          mode: LaunchMode.externalApplication,
+        );
+        if (!launched && mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Could not launch Google Maps')),
+          );
+        }
+      } else {
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Google Maps not available')),
+          );
+        }
+      }
+    } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Could not open Google Maps')),
+          SnackBar(content: Text('Error: $e')),
         );
       }
     }

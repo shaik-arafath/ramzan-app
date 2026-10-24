@@ -646,14 +646,30 @@ class _MasjidDetailScreenState extends State<MasjidDetailScreen> {
   Future<void> _openInGoogleMaps() async {
     final lat = widget.masjid.latitude;
     final lng = widget.masjid.longitude;
-    final url = 'https://www.google.com/maps/dir/?api=1&destination=$lat,$lng';
+    final url = 'https://www.google.com/maps/search/?api=1&query=$lat,$lng';
     
-    if (await canLaunchUrl(Uri.parse(url))) {
-      await launchUrl(Uri.parse(url), mode: LaunchMode.externalApplication);
-    } else {
+    try {
+      if (await canLaunchUrl(Uri.parse(url))) {
+        final launched = await launchUrl(
+          Uri.parse(url),
+          mode: LaunchMode.externalApplication,
+        );
+        if (!launched && mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Could not launch Google Maps')),
+          );
+        }
+      } else {
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Google Maps not available')),
+          );
+        }
+      }
+    } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Could not open Google Maps')),
+          SnackBar(content: Text('Error: $e')),
         );
       }
     }
