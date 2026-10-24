@@ -30,16 +30,13 @@ class _MasjidDetailScreenState extends State<MasjidDetailScreen> {
         actions: [
           IconButton(
             icon: const Icon(Icons.edit, color: AppColors.gold),
-            onPressed: () async {
-              final result = await Navigator.push(
+            onPressed: () {
+              Navigator.push(
                 context,
                 MaterialPageRoute(
                   builder: (_) => EditMasjidScreen(masjid: widget.masjid),
                 ),
               );
-              if (result == true && mounted) {
-                Navigator.pop(context, true);
-              }
             },
             tooltip: 'Edit Masjid',
           ),

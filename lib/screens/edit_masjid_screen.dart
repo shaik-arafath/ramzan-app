@@ -190,7 +190,7 @@ class _EditMasjidScreenState extends State<EditMasjidScreen> {
             backgroundColor: Colors.green,
           ),
         );
-        Navigator.pop(context, true);
+        Navigator.pop(context);
       } else if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
