@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../models/masjid.dart';
 import '../theme/app_colors.dart';
+import 'edit_masjid_screen.dart';
 
 class MasjidDetailScreen extends StatefulWidget {
   final Masjid masjid;
@@ -26,6 +27,23 @@ class _MasjidDetailScreenState extends State<MasjidDetailScreen> {
           style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
         ),
         iconTheme: const IconThemeData(color: Colors.white),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.edit, color: AppColors.gold),
+            onPressed: () async {
+              final result = await Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (_) => EditMasjidScreen(masjid: widget.masjid),
+                ),
+              );
+              if (result == true && mounted) {
+                Navigator.pop(context, true);
+              }
+            },
+            tooltip: 'Edit Masjid',
+          ),
+        ],
       ),
       body: SingleChildScrollView(
         child: Column(
@@ -576,57 +594,59 @@ class _MasjidDetailScreenState extends State<MasjidDetailScreen> {
             ],
           ),
           const SizedBox(height: 16),
-          Container(
+          SizedBox(
             height: 200,
             width: double.infinity,
-            decoration: BoxDecoration(
-              color: AppColors.lightBlack,
-              borderRadius: BorderRadius.circular(12),
-            ),
-            child: Stack(
-              children: [
-                // Placeholder for map
-                Center(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Icon(
-                        Icons.map_outlined,
-                        size: 60,
-                        color: AppColors.gold.withOpacity(0.5),
-                      ),
-                      const SizedBox(height: 8),
-                      Text(
-                        widget.masjid.name,
-                        style: const TextStyle(
-                          color: Colors.white,
-                          fontSize: 14,
+            child: Container(
+              decoration: BoxDecoration(
+                color: AppColors.lightBlack,
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: Stack(
+                children: [
+                  // Placeholder for map
+                  Center(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(
+                          Icons.map_outlined,
+                          size: 60,
+                          color: AppColors.gold.withOpacity(0.5),
                         ),
-                        textAlign: TextAlign.center,
-                      ),
-                      const SizedBox(height: 4),
-                      Text(
-                        '${widget.masjid.latitude.toStringAsFixed(4)}, ${widget.masjid.longitude.toStringAsFixed(4)}',
-                        style: const TextStyle(
-                          color: Colors.grey,
-                          fontSize: 12,
+                        const SizedBox(height: 8),
+                        Text(
+                          widget.masjid.name,
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontSize: 14,
+                          ),
+                          textAlign: TextAlign.center,
                         ),
-                      ),
-                    ],
+                        const SizedBox(height: 4),
+                        Text(
+                          '${widget.masjid.latitude.toStringAsFixed(4)}, ${widget.masjid.longitude.toStringAsFixed(4)}',
+                          style: const TextStyle(
+                            color: Colors.grey,
+                            fontSize: 12,
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
-                ),
-                // Open in Google Maps button
-                Positioned(
-                  bottom: 12,
-                  right: 12,
-                  child: FloatingActionButton.small(
-                    heroTag: 'open_map',
-                    backgroundColor: AppColors.gold,
-                    onPressed: _openInGoogleMaps,
-                    child: const Icon(Icons.directions, color: Colors.black),
+                  // Open in Google Maps button
+                  Positioned(
+                    bottom: 12,
+                    right: 12,
+                    child: FloatingActionButton.small(
+                      heroTag: 'open_map',
+                      backgroundColor: AppColors.gold,
+                      onPressed: _openInGoogleMaps,
+                      child: const Icon(Icons.directions, color: Colors.black),
+                    ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
           const SizedBox(height: 16),
