@@ -1,13 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Launch screen: black background with full screen app icon -->
 <layer-list xmlns:android="http://schemas.android.com/apk/res/android">
-    <!-- Full black background -->
-    <item android:drawable="@android:color/black" />
-
-    <!-- Full screen launcher icon -->
     <item>
-        <bitmap
-            android:gravity="fill"
-            android:src="@mipmap/ic_launcher" />
+        <bitmap android:gravity="fill" android:src="@drawable/background"/>
+    </item>
+    <item>
+        <bitmap android:gravity="fill" android:src="@drawable/splash"/>
     </item>
 </layer-list>
