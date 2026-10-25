@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'services/prayer_time_service.dart';
 import 'services/notification_service.dart';
+import 'screens/splash_screen.dart';
 import 'screens/home_screen.dart';
 import 'providers/cart_provider.dart';
 import 'providers/auth_provider.dart';
@@ -58,7 +59,7 @@ class MyApp extends StatelessWidget {
           ),
           scaffoldBackgroundColor: const Color(0xFF0A2E1C),
         ),
-        home: const HomeScreen(),
+        home: const SplashScreen(),
       ),
     );
   }
