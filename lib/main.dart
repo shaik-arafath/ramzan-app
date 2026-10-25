@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:provider/provider.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'services/prayer_time_service.dart';
@@ -10,10 +9,7 @@ import 'providers/auth_provider.dart';
 import 'providers/wishlist_provider.dart';
 
 void main() async {
-  final widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
-
-  // Keep splash screen visible while initializing
-  FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
+  WidgetsFlutterBinding.ensureInitialized();
 
   // Initialize Supabase
   await Supabase.initialize(
@@ -27,9 +23,6 @@ void main() async {
 
   // Initialize prayer time service
   final prayerTimeService = PrayerTimeService(notificationService);
-
-  // Remove splash screen after initialization
-  FlutterNativeSplash.remove();
 
   runApp(MyApp(
     prayerTimeService: prayerTimeService,
