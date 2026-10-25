@@ -12,8 +12,10 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   void initState() {
     super.initState();
+    print('SplashScreen initState called');
     // Navigate to home screen after 2 seconds
     Future.delayed(const Duration(seconds: 2), () {
+      print('Navigating to HomeScreen');
       if (mounted) {
         Navigator.of(context).pushReplacement(
           MaterialPageRoute(builder: (_) => const HomeScreen()),
@@ -24,6 +26,7 @@ class _SplashScreenState extends State<SplashScreen> {
 
   @override
   Widget build(BuildContext context) {
+    print('SplashScreen build called');
     return Scaffold(
       backgroundColor: Colors.black,
       body: SizedBox(
@@ -32,6 +35,15 @@ class _SplashScreenState extends State<SplashScreen> {
         child: Image.asset(
           'assets/Picsart_26-10-25_03-46-14-188.jpg',
           fit: BoxFit.cover,
+          errorBuilder: (context, error, stackTrace) {
+            print('Error loading splash image: $error');
+            return const Center(
+              child: Text(
+                'Splash Image Error',
+                style: TextStyle(color: Colors.white),
+              ),
+            );
+          },
         ),
       ),
     );
