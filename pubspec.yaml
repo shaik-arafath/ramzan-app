@@ -59,7 +59,8 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
   flutter_lints: ^6.0.0
-  flutter_launcher_icons: ^0.14.3
+  flutter_launcher_icons: ^0.14.0
+  flutter_native_splash: ^2.4.0
 
 flutter:
   uses-material-design: true
@@ -67,6 +68,8 @@ flutter:
   assets:
     - assets/compass_arrow.png
     - assets/app_icon.png
+    - assets/icon.png
+    - assets/splash.png
     - assets/Picsart_26-10-11_23-49-02-904.jpg
     - assets/Picsart_26-10-17_20-21-38-863.png
     - assets/Picsart_26-10-25_03-46-14-188.jpg
@@ -83,4 +86,17 @@ flutter:
 flutter_launcher_icons:
   android: true
   ios: true
-  image_path: "assets/app_icon.png"
+  image_path: "assets/icon.png"
+  adaptive_icon_background: "#111111"
+  adaptive_icon_foreground: "assets/icon.png"
+  adaptive_icon_foreground_inset: 28
+  remove_alpha_ios: true
+
+flutter_native_splash:
+  color: "#111111"
+  image: assets/splash.png
+  android: true
+  ios: true
+  android_gravity: fill
+  android_12:
+    color: "#111111"
