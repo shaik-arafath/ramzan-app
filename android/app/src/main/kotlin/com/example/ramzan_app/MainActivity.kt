@@ -35,37 +35,42 @@ class MainActivity : FlutterActivity() {
         val am = getSystemService(Context.ALARM_SERVICE) as AlarmManager
 
         fun scheduleOne(id: Int, hour: Int, minute: Int, type: String) {
-            val now = System.currentTimeMillis()
-            val cal = Calendar.getInstance().apply {
-                timeInMillis = now
-                set(Calendar.HOUR_OF_DAY, hour)
-                set(Calendar.MINUTE, minute)
-                set(Calendar.SECOND, 0)
-                set(Calendar.MILLISECOND, 0)
+            try {
+                val now = System.currentTimeMillis()
+                val cal = Calendar.getInstance().apply {
+                    timeInMillis = now
+                    set(Calendar.HOUR_OF_DAY, hour)
+                    set(Calendar.MINUTE, minute)
+                    set(Calendar.SECOND, 0)
+                    set(Calendar.MILLISECOND, 0)
+                }
+
+                // If the time for today has already passed, move it to tomorrow so
+                // the alarm does not fire immediately when the app opens.
+                if (cal.timeInMillis <= now) {
+                    cal.add(Calendar.DAY_OF_YEAR, 1)
+                }
+
+                val intent = Intent(this, AlarmReceiver::class.java).apply {
+                    putExtra("TYPE", type)
+                }
+
+                val pi = PendingIntent.getBroadcast(
+                    this,
+                    id,
+                    intent,
+                    PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
+                )
+
+                am.setExactAndAllowWhileIdle(
+                    AlarmManager.RTC_WAKEUP,
+                    cal.timeInMillis,
+                    pi
+                )
+            } catch (e: Exception) {
+                // Log error but don't crash the app
+                android.util.Log.e("MainActivity", "Error scheduling alarm: ${e.message}")
             }
-
-            // If the time for today has already passed, move it to tomorrow so
-            // the alarm does not fire immediately when the app opens.
-            if (cal.timeInMillis <= now) {
-                cal.add(Calendar.DAY_OF_YEAR, 1)
-            }
-
-            val intent = Intent(this, AlarmReceiver::class.java).apply {
-                putExtra("TYPE", type)
-            }
-
-            val pi = PendingIntent.getBroadcast(
-                this,
-                id,
-                intent,
-                PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
-            )
-
-            am.setExactAndAllowWhileIdle(
-                AlarmManager.RTC_WAKEUP,
-                cal.timeInMillis,
-                pi
-            )
         }
 
         fun parseTime(str: String?): Pair<Int, Int>? {
