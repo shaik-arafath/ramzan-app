@@ -70,6 +70,7 @@ flutter:
     - assets/app_icon.png
     - assets/icon.png
     - assets/splash.png
+    - assets/transparent.png
     - assets/Picsart_26-10-11_23-49-02-904.jpg
     - assets/Picsart_26-10-17_20-21-38-863.png
     - assets/Picsart_26-10-25_03-46-14-188.png
@@ -100,5 +101,5 @@ flutter_native_splash:
   android_gravity: fill
   android_12:
     color: "#111111"
-    image: assets/icon.png
+    image: assets/transparent.png
     icon_background_color: "#111111"
