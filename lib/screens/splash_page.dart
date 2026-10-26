@@ -1,31 +1,22 @@
 import 'package:flutter/material.dart';
 import 'home_screen.dart';
 
-class SplashPage extends StatefulWidget {
+class SplashPage extends StatelessWidget {
   const SplashPage({super.key});
-  @override
-  State<SplashPage> createState() => _SplashPageState();
-}
-
-class _SplashPageState extends State<SplashPage> {
-  @override
-  void initState() {
-    super.initState();
-    Future.delayed(const Duration(seconds: 2), () {
-      if (!mounted) return;
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (_) => const HomeScreen()),
-      );
-    });
-  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.black,
+      backgroundColor: Colors.red,
       body: SizedBox.expand(
-        child: Image.asset('assets/splash.png', fit: BoxFit.cover),
+        child: Image.asset(
+          'assets/splash.png',
+          fit: BoxFit.cover,
+          errorBuilder: (c, e, s) => Center(
+            child: Text('IMAGE ERROR: $e',
+                style: const TextStyle(color: Colors.white)),
+          ),
+        ),
       ),
     );
   }
