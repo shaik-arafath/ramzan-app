@@ -101,5 +101,5 @@ flutter_native_splash:
   android_gravity: fill
   android_12:
     color: "#111111"
-    image: assets/transparent.png
+    image: assets/splash.png
     icon_background_color: "#111111"
