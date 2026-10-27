@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
 import 'services/prayer_time_service.dart';
 import 'services/notification_service.dart';
 import 'screens/splash_page.dart';
@@ -9,31 +8,21 @@ import 'providers/cart_provider.dart';
 import 'providers/auth_provider.dart';
 import 'providers/wishlist_provider.dart';
 
-void main() async {
+void main() {
   WidgetsFlutterBinding.ensureInitialized();
-
-  // Initialize Supabase
-  await Supabase.initialize(
-    url: 'https://eiocioyxmrywqwilxxho.supabase.co',
-    anonKey: 'sb_publishable_YUSUwyG-hlJ5eulkxcRjzA_Bvm5VuCR',
-  );
-
-  // Initialize notification service
-  final notificationService = NotificationService();
-  await notificationService.initialize();
-
-  // Initialize prayer time service
-  final prayerTimeService = PrayerTimeService(notificationService);
-
-  runApp(MyApp(
-    prayerTimeService: prayerTimeService,
-  ));
+  runApp(const MyApp());
 }
 
-class MyApp extends StatelessWidget {
-  final PrayerTimeService prayerTimeService;
+class MyApp extends StatefulWidget {
+  const MyApp({super.key});
+  @override
+  State<MyApp> createState() => _MyAppState();
+}
 
-  const MyApp({super.key, required this.prayerTimeService});
+class _MyAppState extends State<MyApp> {
+  final NotificationService notificationService = NotificationService();
+  late final PrayerTimeService prayerTimeService =
+      PrayerTimeService(notificationService);
 
   @override
   Widget build(BuildContext context) {
@@ -59,7 +48,7 @@ class MyApp extends StatelessWidget {
           ),
           scaffoldBackgroundColor: const Color(0xFF0A2E1C),
         ),
-        home: const SplashPage(),
+        home: SplashPage(notificationService: notificationService),
       ),
     );
   }

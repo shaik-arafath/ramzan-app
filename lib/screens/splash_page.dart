@@ -1,8 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
+import '../services/notification_service.dart';
 import 'home_screen.dart';
 
 class SplashPage extends StatefulWidget {
-  const SplashPage({super.key});
+  final NotificationService notificationService;
+  const SplashPage({super.key, required this.notificationService});
+
   @override
   State<SplashPage> createState() => _SplashPageState();
 }
@@ -15,14 +19,10 @@ class _SplashPageState extends State<SplashPage> {
   }
 
   Future<void> _start() async {
-    try {
-      await Future.wait([
-        Future.delayed(const Duration(seconds: 2)),
-        _initApp(),
-      ]).timeout(const Duration(seconds: 8));
-    } catch (e) {
-      debugPrint('Startup error: $e');
-    }
+    await Future.wait([
+      Future.delayed(const Duration(seconds: 2)),
+      _initApp(),
+    ]);
     if (!mounted) return;
     Navigator.pushReplacement(
       context,
@@ -31,7 +31,21 @@ class _SplashPageState extends State<SplashPage> {
   }
 
   Future<void> _initApp() async {
-    // Put your old startup code here.
+    try {
+      await Supabase.initialize(
+        url: 'https://eiocioyxmrywqwilxxho.supabase.co',
+        anonKey: 'sb_publishable_YUSUwyG-hlJ5eulkxcRjzA_Bvm5VuCR',
+      ).timeout(const Duration(seconds: 8));
+    } catch (e) {
+      debugPrint('Supabase error: $e');
+    }
+    try {
+      await widget.notificationService
+          .initialize()
+          .timeout(const Duration(seconds: 8));
+    } catch (e) {
+      debugPrint('Notification error: $e');
+    }
   }
 
   @override
@@ -39,7 +53,13 @@ class _SplashPageState extends State<SplashPage> {
     return Scaffold(
       backgroundColor: Colors.black,
       body: SizedBox.expand(
-        child: Image.asset('assets/splash.png', fit: BoxFit.cover),
+        child: Image.asset(
+          'assets/splash.png',
+          fit: BoxFit.cover,
+          errorBuilder: (c, e, s) => Center(
+            child: Text('$e', style: const TextStyle(color: Colors.white)),
+          ),
+        ),
       ),
     );
   }
