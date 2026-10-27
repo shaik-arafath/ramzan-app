@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
 import '../services/notification_service.dart';
 import 'home_screen.dart';
 
@@ -31,14 +30,6 @@ class _SplashPageState extends State<SplashPage> {
   }
 
   Future<void> _initApp() async {
-    try {
-      await Supabase.initialize(
-        url: 'https://eiocioyxmrywqwilxxho.supabase.co',
-        anonKey: 'sb_publishable_YUSUwyG-hlJ5eulkxcRjzA_Bvm5VuCR',
-      ).timeout(const Duration(seconds: 8));
-    } catch (e) {
-      debugPrint('Supabase error: $e');
-    }
     try {
       await widget.notificationService
           .initialize()

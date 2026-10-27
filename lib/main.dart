@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 import 'services/prayer_time_service.dart';
 import 'services/notification_service.dart';
 import 'screens/splash_page.dart';
@@ -8,8 +9,19 @@ import 'providers/cart_provider.dart';
 import 'providers/auth_provider.dart';
 import 'providers/wishlist_provider.dart';
 
-void main() {
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
+  // Supabase must be ready before the providers start
+  try {
+    await Supabase.initialize(
+      url: 'https://eiocioyxmrywqwilxxho.supabase.co',
+      anonKey: 'sb_publishable_YUSUwyG-hlJ5eulkxcRjzA_Bvm5VuCR',
+    ).timeout(const Duration(seconds: 8));
+  } catch (e) {
+    debugPrint('Supabase error: $e');
+  }
+
   runApp(const MyApp());
 }
 
