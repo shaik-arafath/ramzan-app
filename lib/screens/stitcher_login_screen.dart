@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import '../models/stitcher.dart';
 import 'stitcher_dashboard_screen.dart';
+import 'stitcher_register_screen.dart';
 
 class StitcherLoginScreen extends StatefulWidget {
   const StitcherLoginScreen({super.key});
@@ -166,7 +167,7 @@ class _StitcherLoginScreenState extends State<StitcherLoginScreen> {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (_) => StitcherRegisterScreen(),
+                      builder: (_) => const StitcherRegisterScreen(),
                     ),
                   );
                 },
