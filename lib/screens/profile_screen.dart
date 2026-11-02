@@ -8,6 +8,8 @@ import 'wishlist_screen.dart';
 import 'order_history_screen.dart';
 import 'login_screen.dart';
 import 'edit_profile_screen.dart';
+import 'stitcher_login_screen.dart';
+import 'admin_stitcher_verification_screen.dart';
 
 class ProfileScreen extends StatelessWidget {
   ProfileScreen({super.key});
@@ -262,6 +264,28 @@ class ProfileScreen extends StatelessWidget {
                   Icons.help,
                   () {
                     _showHelpSupport(context);
+                  },
+                ),
+                _buildMenuItem(
+                  context,
+                  'Stitchers',
+                  Icons.person_work,
+                  () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => const StitcherLoginScreen()),
+                    );
+                  },
+                ),
+                _buildMenuItem(
+                  context,
+                  'Admin Verification',
+                  Icons.admin_panel_settings,
+                  () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => const AdminStitcherVerificationScreen()),
+                    );
                   },
                 ),
                 const SizedBox(height: 24),
