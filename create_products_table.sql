@@ -1,5 +1,8 @@
+-- Drop products table if it exists (to recreate with correct schema)
+DROP TABLE IF EXISTS products CASCADE;
+
 -- Create products table
-CREATE TABLE IF NOT EXISTS products (
+CREATE TABLE products (
   id SERIAL PRIMARY KEY,
   stitcher_id TEXT NOT NULL,
   name TEXT NOT NULL,
@@ -13,11 +16,7 @@ CREATE TABLE IF NOT EXISTS products (
 );
 
 -- Create index on stitcher_id for faster lookups
-CREATE INDEX IF NOT EXISTS idx_products_stitcher_id ON products(stitcher_id);
+CREATE INDEX idx_products_stitcher_id ON products(stitcher_id);
 
 -- Create index on category for filtering
-CREATE INDEX IF NOT EXISTS idx_products_category ON products(category);
-
--- Create trigger to update updated_at timestamp
-CREATE TRIGGER update_products_updated_at BEFORE UPDATE ON products
-  FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
+CREATE INDEX idx_products_category ON products(category);
