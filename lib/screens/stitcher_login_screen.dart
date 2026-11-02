@@ -166,7 +166,7 @@ class _StitcherLoginScreenState extends State<StitcherLoginScreen> {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (_) => const StitcherRegisterScreen(),
+                      builder: (_) => StitcherRegisterScreen(),
                     ),
                   );
                 },

@@ -28,5 +28,7 @@ BEGIN
 END;
 $$ language 'plpgsql';
 
+-- Drop trigger if exists, then create it
+DROP TRIGGER IF EXISTS update_stitchers_updated_at ON stitchers;
 CREATE TRIGGER update_stitchers_updated_at BEFORE UPDATE ON stitchers
   FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();

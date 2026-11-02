@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -63,7 +64,7 @@ class _AddProductScreenState extends State<AddProductScreen> {
         final fileName = '${DateTime.now().millisecondsSinceEpoch}_${image.name}';
         final bytes = await image.readAsBytes();
         
-        await Supabase.instance.client.storage.from('products').upload(
+        await Supabase.instance.client.storage.from('products').uploadBinary(
           fileName,
           bytes,
         );
@@ -220,21 +221,17 @@ class _AddProductScreenState extends State<AddProductScreen> {
                               children: [
                                 ClipRRect(
                                   borderRadius: BorderRadius.circular(8),
-                                  child: Image.network(
-                                    _selectedImages[index].path,
+                                  child: Image.file(
+                                    File(_selectedImages[index].path),
                                     width: 130,
                                     height: 130,
                                     fit: BoxFit.cover,
                                     errorBuilder: (context, error, stackTrace) {
-                                      return Image.file(
-                                        // For local files, we need to convert XFile to File
-                                        // This is a simplified version
-                                        Container(
-                                          width: 130,
-                                          height: 130,
-                                          color: Colors.grey[300],
-                                          child: const Icon(Icons.broken_image),
-                                        ),
+                                      return Container(
+                                        width: 130,
+                                        height: 130,
+                                        color: Colors.grey[300],
+                                        child: const Icon(Icons.broken_image),
                                       );
                                     },
                                   ),

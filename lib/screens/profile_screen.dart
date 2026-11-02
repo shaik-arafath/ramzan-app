@@ -269,7 +269,7 @@ class ProfileScreen extends StatelessWidget {
                 _buildMenuItem(
                   context,
                   'Stitchers',
-                  Icons.person_work,
+                  Icons.work,
                   () {
                     Navigator.push(
                       context,
